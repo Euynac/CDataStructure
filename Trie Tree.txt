@@ -1,0 +1,339 @@
+﻿// TrieTree.cpp : Defines the entry point for the console application.
+//
+
+#include "stdafx.h"
+#include <iostream>
+#include <map>
+#include <string>
+#include <fstream>
+#define error -1
+#define OK 1
+#define Fail 2
+using namespace std;
+class Trie
+{
+	//Trie()
+	//	: root(new Tree)
+	//{}
+	//~Trie()
+	//{
+	//	if (root)delete root;
+	//}
+private:
+	typedef struct Tree
+	{
+		Tree()
+			: isWord(false)//初始化结构体时置isWord变量为false
+		{}
+		~Tree()//map中的value是指针，如果不写析构函数会导致内存泄漏
+		{
+			for (auto& p : child)
+				if (p.second)
+					delete p.second;
+		}
+		bool isWord;
+		map<char, Tree*> child;
+	}Tree;
+	typedef struct Tree* Tpoint;
+	Tpoint root = new Tree();
+	map<char, Tree*>::iterator iter;
+	int countWord = 0;	
+	//方法：
+	int search(string buf,int preORall)//pre=0 all=1 delete=2;
+	{
+		Tpoint p = root;
+		int len = buf.length();
+		for (int i = 0; i < len; i++)
+		{
+			if (!((buf[i] >= 'a' && buf[i] <= 'z') || (buf[i] >= 'A' && buf[i] <= 'Z')))//仅支持英文单词
+				return error;
+			iter = p->child.find(buf[i]);
+			if (iter != p->child.end())//如果找到前缀，则沿着树走下去
+			{
+				p = iter->second;
+			}
+			else
+			{
+				return Fail;
+			}
+		}
+		if ((preORall == 0) || (p->isWord == true))
+		{
+			if (preORall == 2)//利用search（）删除之前输入的单词操作
+			{
+				if (p->child.size() > 0) p->isWord = false;//如果要删除的单词是其他单词的前缀
+				else//否则开始删除并释放内存
+				{
+					string tmpbuf = buf;
+					while (!buf.empty())//逐个字母检测是否是其他单词后缀
+					{
+						buf.pop_back();
+						if (search(buf, 1) == OK)//如果是其他单词，那么从这里开始删除
+							break;
+					}
+					Tpoint eraser = root;
+					len = buf.length();
+					for (int i = 0; i < len + 1; i++)//定位到删除位置
+					{
+						iter = eraser->child.find(tmpbuf[i]);
+						if(i != len)
+							eraser = iter->second;
+					}
+					Tpoint tmpera = iter->second;
+					eraser->child.erase(iter);
+					delete tmpera;
+				}
+				countWord--;
+				return OK;
+			}
+			return OK;
+		}
+		else return Fail;
+	}
+	void Display(Tpoint p, string tmp)
+	{
+		map<char, Tree*>::iterator iter2;//!!!注意这个不能不写 全局变量问题debug了好久 切记切记
+		if (p->isWord) cout << tmp << endl;
+		if (!p->child.empty())
+		{
+			for (iter2 = p->child.begin(); iter2 != p->child.end(); iter2++)//递归实现遍历
+			{
+				Tpoint tmppointer;
+				tmppointer = iter2->second;
+				Display(tmppointer, tmp + iter2->first);
+			} 
+		} 
+	}
+public:
+	int insertWord(string buf)
+	{
+		Tpoint p = root;
+		int len = buf.length();
+		int flag = 0;//判断是否以前有该单词
+		for (int i = 0; i < len; i++)
+		{
+			if (!((buf[i] >= 'a' && buf[i] <= 'z') || (buf[i] >= 'A' && buf[i] <= 'Z')))//仅支持英文单词
+				return error;
+			if (!p->child.empty())
+			{
+				iter = p->child.find(buf[i]);
+				if (iter != p->child.end())//如果找到前缀，则沿着树走下去
+				{
+					p = iter->second;
+				}
+				else goto there;
+			}
+			else//否则另开辟一条道路
+			{
+			there:
+				flag = 1;
+				Tpoint tmp = new Tree();
+				p->child[buf[i]] = tmp;
+				p = tmp;
+			}
+		}
+		if (flag||p->isWord == false)//避免重复
+		{
+			p->isWord = true;//当单词完成，标记该路径为一个词,！这里会导致单词的下一个节点isWord是true，而不是单词末尾的节点。
+			countWord++;
+		}
+		return OK;
+	}
+	int searchWord(string buf)
+	{
+		return search(buf, 1);
+	}
+	int searchPreWord(string buf)
+	{
+		return search(buf, 0);
+	}
+	int HowManyWords()
+	{
+		return countWord;
+	}
+	void DeleteAll()
+	{
+		Tpoint p;
+		delete root;
+		p = new Tree();
+		root = p;
+		countWord = 0;
+	}
+	void DisplayAll()
+	{
+		if (countWord == 0) cout << "树上没有词！" << endl;
+		else
+		{
+			cout << "一共有" << countWord << "个词, 它们是：" << endl;
+			Display(root, "");
+		}
+	}
+	void DisplayPre(string buf)//显示所有前缀词
+	{
+		if (searchPreWord(buf) == OK)
+		{
+			Tpoint p = root;
+			int len = buf.length();
+			for (int i = 0; i < len; i++)
+			{
+				iter = p->child.find(buf[i]);
+				p = iter->second;
+			}
+			cout << buf << "开头的词有：" << endl;
+			Display(p,buf);
+		}
+		else cout << "无此前缀开头的词" << endl;
+	}
+	void deleteWord(string buf)
+	{
+		if (search(buf, 2) == OK)
+		{
+			cout << "删除成功" << endl;
+		}
+		else
+		{
+			cout << "所要删除的单词不存在" << endl;
+		}
+	}
+	int ImportWords()
+	{
+		fstream file;
+		file.open("Words.txt");
+		int errorCount = 0, flag = 0;
+		//FILE *fp;
+		//fp = fopen("Words.txt", "r");
+		//if (fp == NULL) return Fail;
+		if (!file.is_open()) return Fail;
+		char buf[255];
+		char *p;
+		while (!file.eof())
+		{
+			file.getline(buf, 255);
+			if ((p = strchr(buf, '\n')) != NULL) *p = '\0';
+			string str;
+			str = buf;
+			if (insertWord(str) == OK)
+			{
+				errorCount++;
+			}
+			else
+			{
+				cout << "批量导入发生错误, 错误发生在第" << errorCount + 1 << "个词，请确认该行没有空格等特殊字符" << endl;
+				flag = 1;
+				break;
+			}
+		}
+		file.close();
+		/*while (fgets(buf, 255, fp) != NULL) //在VS下会提示不安全
+		{
+			if ((p = strchr(buf, '\n')) != NULL) *p = '\0';
+			string str;
+			str = buf;
+			if (insertWord(str) == OK)
+			{
+				errorCount++;
+			}
+			else
+			{
+				cout << "批量导入发生错误, 错误发生在第" << errorCount + 1 << "个词，请确认该行没有空格等特殊字符" << endl;
+				flag = 1;
+				break;
+			}
+		}*/
+		if (!flag)
+		{
+			cout << "批量导入成功，共导入" << errorCount << "个词" << endl;
+			return OK;
+		}
+		return 3;
+	}
+};
+int main()
+{
+	Trie T;
+	string Word;
+	int option;
+	while (1)
+	{
+		cout << endl;
+		cout << "1:Insert Word (插入单词)" << endl;
+		cout << "2:Search PreWord（查找前缀词）" << endl;
+		cout << "3:Search Word（搜索词）" << endl;
+		cout << "4:How many Words（有多少词）" << endl;
+		cout << "5:Delete All（初始化）" << endl;
+		cout << "6:Display all words（显示所有词）" << endl;
+		cout << "7:Display all words start with \"input\"（显示所有某个前缀开头的词）" << endl;
+		cout << "8:Delete the Word you had inserted（删除之前输入过的词）" << endl;
+		cout << "9:Import Words（文件批量导入单词（文件需命名为Words.txt 且每行仅一个词）） " << endl;
+		cout << "10:Exit（退出）" << endl;
+		cin >> option;
+		if (option == 1)
+		{
+			cin >> Word;
+			int tmp = T.insertWord(Word);
+			if (tmp == error) cout << "输入的不是一个词（目前仅支持英文单词）" << endl;
+			else cout << "Succeed" << endl;
+		}
+		else if (option == 2)
+		{
+			cin >> Word;
+			int tmp = T.searchPreWord(Word);
+			if (tmp == Fail) cout << "没有一个词的前缀是" << Word << endl;
+			else if (tmp == error) cout << "输入的不是英文单词" << endl;
+			else cout << "Find!" << endl;
+		}
+		else if (option == 3)
+		{
+			cin >> Word;
+			int tmp = T.searchWord(Word);
+			if (tmp == Fail) cout << "没有" << Word << "这个词" << endl;
+			else if (tmp == error) cout << "输入的不是英文单词" << endl;
+			else cout << "Find!" << endl;
+		}
+		else if (option == 4)
+		{
+			cout << "一共有"<< T.HowManyWords() << "个词" << endl;
+		}
+		else if (option == 5)
+		{
+			T.DeleteAll();
+		}
+		else if (option == 6)
+		{
+			T.DisplayAll();
+		}
+		else if (option == 7)
+		{
+			cin >> Word;
+			T.DisplayPre(Word);
+		}
+		else if (option == 8)
+		{
+			cin >> Word;
+			T.deleteWord(Word);
+		}
+		else if (option == 9)
+		{
+			int tmp = T.ImportWords();
+			if (tmp == Fail)
+			{
+				cout << "批量导入文件不存在或无法读取，请确认导入文件命名为Words.txt并与执行文件放在同一个目录下" << endl;
+			}
+			else if (tmp == 3)
+			{
+				cout << "导入未完成" << endl;
+			}
+		}
+		else if (option == 10) break;
+		else
+		{
+			cout << "请输入1-10的数字" << endl;
+			cin.clear();//重置cin标识符？
+			//cin.sync();//清空输入缓冲区
+			string line;
+			getline(cin, line);
+		}
+	}
+    return 0;
+}
+
