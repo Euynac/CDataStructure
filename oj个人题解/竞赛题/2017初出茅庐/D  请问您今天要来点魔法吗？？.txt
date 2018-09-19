@@ -1,0 +1,101 @@
+#include<stdio.h>
+int main()
+{
+    int t;
+    scanf("%d",&t);
+    int m;
+    while(t--)
+    {
+        int low,high,mid,sum=0,flag=1,middle;
+        scanf("%d",&m);
+        low=m/2;
+        high=m;
+        mid=(low+high)/2;
+        while(low<=high)
+        {
+            sum=0;
+            flag=1;
+            middle=mid;
+            while(mid)
+            {
+                sum+=mid;
+                mid/=10;
+            }
+        sum+=mid;
+        if(sum<m)
+            low=middle+1;
+        if(sum>m)
+            high=middle-1;
+        if(sum==m)
+            {
+            flag=0;
+            printf("%d\n",middle);
+            break;
+            }
+        mid=(low+high)/2;
+        }
+        if(flag) printf("-1\n");
+    }
+    return 0;
+}
+
+
+
+
+
+
+
+
+
+
+1231212313
+
+
+````````````````````````
+#include<stdio.h>
+int calans(int n)
+{
+    int sum=0;
+    while(n)
+    {
+        sum+=n;
+        n/=10;
+    }
+    return sum;
+}
+int main()
+{
+    int t,m,low,high,mid;
+    scanf("%d",&t);
+    while(t--)
+    {
+        scanf("%d",&m);
+        if(m<10)
+        {
+            printf("%d\n",m);
+            goto end;
+        }
+        low=m/2;
+        high=m;
+        mid=(low+high)/2;
+        while(mid!=0)
+        {
+            if(calans(mid)<m)
+                low=mid;
+            else if(calans(mid)>m)
+                high=mid;
+            else
+            {
+                printf("%d\n",mid);
+                goto end;
+            }
+            if(mid==(low+high)/2)break;
+            mid=(low+high)/2;
+        }
+        printf("-1\n");
+        end:
+            while(0);
+    }
+    return 0;
+}
+

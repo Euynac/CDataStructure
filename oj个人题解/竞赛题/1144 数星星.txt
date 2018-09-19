@@ -1,0 +1,64 @@
+   #include <stdio.h>
+   #include<stdlib.h>
+   struct graph  //结构体类型，储存星星的坐标
+   {
+       int x;
+       int y;
+   };
+   int binarySearch(struct graph [],int,int); //声明二分查找的函数
+   int cmp(const void*a,const void*b) //快速排序规则函数
+     {
+        return  *(int*)a-*(int*)b;
+     }
+     
+     int main()
+     {
+         int n,m,i,j,temp,count=0,location;
+         struct graph a[100000],origin[100000];
+         scanf("%d",&n);
+         for(i=0;i<n;i++) 
+         {
+             scanf("%d%d",&a[i].x,&a[i].y);
+             origin[i].x=a[i].x;
+             origin[i].y=a[i].y;
+         } //循环输入星星坐标
+         qsort(a,n,sizeof(struct graph),cmp);//按x坐标升序快排
+         scanf("%d",&m);//输入星星的个数
+         for(i=0;i<m;i++,count=0)
+         {
+             scanf("%d",&temp);
+             location=binarySearch(a,n,origin[temp-1].x);//得到与所输入星星x
+			值相同的星星的位置
+             for(;a[location].x==origin[temp-1].x;location++);//得到x将要变
+			得与所输入星星x值不同的location（最终目的就是为了减小穷举的数
+			量）
+             for(j=0;j<location-1;j++)
+             {
+    
+                 if(a[j].y<=origin[temp-1].y)
+                 count++;
+             }
+             printf("%d\n",count);
+         }
+         return 0;
+     }
+     int binarySearch(struct graph nums[],int Max,int key)//二分查找算法的函
+	数原型。
+     {
+         int index=-1,found=0,left=0,right=Max-1,mid;
+         while(left<=right&&!found)
+         {
+             mid=(int)((left+right)/2);
+             if(key==nums[mid].x)
+             {
+                 found=1;
+                 index=mid;
+             }
+             else
+                 if(key>nums[mid].x)
+                     left=mid+1;
+                 else
+                     right=mid-1;
+         }
+         return index;
+     }

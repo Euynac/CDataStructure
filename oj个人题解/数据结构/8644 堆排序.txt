@@ -1,0 +1,63 @@
+#include <iostream>
+using namespace std;
+
+void adjustheap(int A[],int n,int len)
+{
+    if(2*n+1<len)
+    {
+        int *Mtmp,nextadjust;
+        if((2*n+2)>=len)
+        {
+            Mtmp=&A[2*n+1];
+            nextadjust=2*n+1;
+        }
+        else if(A[2*n+1]>=A[2*n+2])//这里把等号删除就错了？ 有毒
+        {
+            Mtmp=&A[2*n+1];
+            nextadjust=2*n+1;
+        }
+        else
+        {
+            Mtmp=&A[2*n+2];
+            nextadjust=2*n+2;
+        }
+        if(A[n]<*Mtmp)
+        {
+            int tmp;
+            tmp=A[n];
+            A[n]=*Mtmp;
+            *Mtmp=tmp;
+            adjustheap(A,nextadjust,len);
+        }
+    }
+
+}
+int main()
+{
+    int n;
+    cin>>n;
+    int A[n];
+    for(int i=0;i<n;i++)cin>>A[i];
+    int len=n,relen=n;
+    int tmpn=n/2-1;
+    while(tmpn>=0)
+    {
+        adjustheap(A,tmpn,len);
+        n-=2;
+        tmpn=n/2-1;
+    }
+    for(int i=0;i<relen;i++)cout<<A[i]<<" ";
+    cout<<endl;
+    while(len>=2)
+    {
+        int tmp;
+        tmp=A[len-1];
+        A[len-1]=A[0];
+        A[0]=tmp;
+        len--;
+        adjustheap(A,0,len);
+        for(int i=0;i<relen;i++)cout<<A[i]<<" ";
+        cout<<endl;
+    }
+    return 0;
+}

@@ -1,0 +1,48 @@
+#include <iostream>
+#include <cstdio>
+using namespace std;
+int B[10][10000];//B[x][0]存的是该桶里有多少个
+void RadixSort(int order,int A[],int n)
+{
+    int factor=1;
+    for(int digit=1;digit<=order;digit++,factor*=10)
+    {
+        for(int i=0;i<n;i++)
+        {
+            int tmp=A[i]/factor%10;
+            B[tmp][B[tmp][0]+1]=A[i];
+            B[tmp][0]++;
+        }
+        for(int i=0;i<n;)//collect
+        {
+            for(int j=0;j<10;j++)
+            {
+                if(B[j][0]!=0)
+                {
+                    for(int k=1;k<=B[j][0];k++)
+                    {
+                        A[i]=B[j][k];
+                        i++;
+                    }
+                    B[j][0]=0;
+                }
+            }
+        }
+        for(int i=0;i<n;i++)printf("%03d ",A[i]);
+        cout<<endl;
+    }
+}
+int main()
+{
+    int n,maxx=0,len=1;
+    cin>>n;
+    int A[n];
+    for(int i=0;i<n;i++)
+    {
+        cin>>A[i];
+        if(maxx<A[i])maxx=A[i];
+    }
+    while(maxx/=10)len++;
+    RadixSort(len,A,n);
+    return 0;
+}

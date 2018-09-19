@@ -1,0 +1,95 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <math.h>
+int sushu(int n)
+{
+    int i;
+    for(i=1;i<=sqrt((double)n);i++)
+    {
+        if(i==1)
+            continue;
+        if(n%i==0)
+        {
+            return 0;
+        }
+    }
+    return 1;
+}
+int cmp(const void *a,const void *b)
+{
+    return (*(int *)a-*(int *)b);
+}
+int main()
+{
+    int a[105][105]={};
+    int N,sum,sums[200]={},count=0,i,j;
+    scanf("%d",&N);
+    for(i=0;i<N;i++)
+    {
+        for(j=0;j<N;j++)
+        {
+            scanf("%d",&a[i][j]);
+        }
+    }
+    for(i=0;i<N;i++)
+    {
+        for(j=0;j<N;j++)
+        {
+            if(i+2<N)
+            {
+                sum=a[i][j]+a[i+1][j]+a[i+2][j];
+                if(sushu(sum)==1)//if 0 then sum is not sushu
+                {
+                    sums[count]=sum;
+                    count++;
+                }
+            }
+            if(j+2<N)
+            {
+                sum=a[i][j]+a[i][j+1]+a[i][j+2];
+                if(sushu(sum)==1)
+                {
+                    sums[count]=sum;
+                    count++;
+                }
+            }
+            if((i+1<N)&&(j+1)<N)
+            {
+                sum=a[i][j]+a[i+1][j]+a[i+1][j+1];
+                if(sushu(sum)==1)
+                {
+                    sums[count]=sum;
+                    count++;
+                }
+                sum=a[i][j]+a[i+1][j]+a[i][j+1];
+                if(sushu(sum)==1)
+                {
+                    sums[count]=sum;
+                    count++;
+                }
+                sum=a[i][j]+a[i+1][j+1]+a[i][j+1];
+                if(sushu(sum)==1)
+                {
+                    sums[count]=sum;
+                    count++;
+                }
+            }
+            if((i+1<N)&&(j-1>=0))
+            {
+                sum=a[i][j]+a[i+1][j]+a[i+1][j-1];
+                if(sushu(sum)==1)
+                {
+                    sums[count]=sum;
+                    count++;
+                }
+            }
+        }
+    }
+    qsort(sums,count,sizeof(sums[0]),cmp);
+    printf("%d\n",count);
+    for(i=0;i<count;i++)
+    {
+        printf("%d\n",sums[i]);
+    }
+    return 0;
+}

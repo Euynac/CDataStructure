@@ -1,0 +1,61 @@
+#include <iostream>
+using namespace std;
+void mergesort(int A[],int start1,int start2,int d,int n)
+{
+    int B[n];
+    int i=start1,j=start2;
+    int k;
+    for(k=0;j<n&&i<start1+d&&j<start2+d;)
+    {
+        if(A[i]<A[j])
+        {
+            B[k]=A[i];
+            i++;k++;
+        }
+        else
+        {
+            B[k]=A[j];
+            j++;k++;
+        }
+    }
+    while(i<start1+d)
+    {
+        B[k]=A[i];
+        i++;k++;
+    }
+    while(j<start2+d&&j<n)
+    {
+        B[k]=A[j];
+        j++;k++;
+    }
+    for(i=start1,j=0;i<start2+d;i++,j++)
+    {
+        A[i]=B[j];
+    }
+}
+void divided(int A[],int n)
+{
+    int d=1;
+    int i,j;
+    while(d<n)
+    {
+        for(i=0,j=d;j<n;j+=2*d,i+=2*d)
+            mergesort(A,i,j,d,n);
+        for(int i=0;i<n;i++)cout<<A[i]<<" ";
+        cout<<endl;
+        d*=2;
+    }
+}
+int main()
+{
+    int n;
+    cin>>n;
+    int A[n];
+    for(int i=0;i<n;i++)cin>>A[i];
+    if(n==1)
+        cout<<A[0];
+    else
+        divided(A,n);
+
+    return 0;
+}

@@ -1,0 +1,80 @@
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+struct time
+{
+    int size;
+    char time[80];
+};
+typedef struct time time;
+int caltime(char *s,int flag)
+{
+    int size=0,i;
+    for(i=0;s[i]!=':';i++);
+    if(i==2)
+        size=((s[0]-'0')*10+(s[1]-'0'))*60;
+    else
+        size=(s[0]-'0')*60;
+    if(s[i+2]==' '||s[i+2]=='\0')
+        size+=(s[i+1]-'0');
+    else
+        size+=(s[i+1]-'0')*10+(s[i+2]-'0');
+    if(flag==0||flag==1)
+        return size;
+    else
+        return size+12*60;
+}
+int cmp(const void *a,const void *b)
+{
+    time *aa = (time *)a;
+    time *bb = (time *)b;
+    return ((aa->size)>(bb->size)?1:-1);
+}
+int main()
+{
+    time t[10];
+    int i,flag,n=0,j=0;
+    char buf[80];
+    while(gets(buf)!=NULL && strlen(buf)>0)
+    {
+        for(flag=0,i=0;buf[i]!='\0';i++)
+        {
+            if(buf[i]=='A'&&buf[i+1]=='M')
+            {
+                flag=1;
+                break;
+            }
+            if(buf[i]=='P'&&buf[i+1]=='M')
+            {
+                flag=2;
+                break;
+            }
+        }
+        strcpy(t[j].time,buf);
+        t[j].size=caltime(buf,flag);
+        n++;j++;
+    }
+    qsort(t,n,sizeof(t[0]),cmp);
+    for(j=0;j<n;j++)
+        printf("%s\n",t[j].time);
+    return 0;
+}
+
+
+3:30 PM
+09:09
+05:2 AM
+
+
+
+
+09:23
+09:24
+02:42 AM
+2:23 PM
+2:2 PM
+3:2
+3:4
+05:2 AM
+09:09
+03:30 PM

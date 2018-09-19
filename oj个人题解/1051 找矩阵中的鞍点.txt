@@ -1,0 +1,116 @@
+#include <stdio.h>
+int main()
+{
+    int a[3][4],col_1[3],row_2[4];
+    int row_1count[3],col_1count[3]={},row_2count[4]={},col_2count[4];
+    int sum_1[3],sum_2[4];
+    int i,j;
+    for(i=0;i<3;i++)
+    {
+        for(j=0;j<4;j++)
+        {
+            scanf("%d",&a[i][j]);
+        }
+    }
+    for(i=0;i<3;i++)
+    {
+        col_1[i]=a[i][0];
+        row_1count[i]=i;
+    }
+    for(i=0;i<4;i++)
+    {
+        col_2count[i]=i;
+        row_2[i]=a[0][i];
+    }
+    for(i=0;i<3;i++)
+    {
+        for(j=0;j<4;j++)
+        {
+            if(col_1[i]<a[i][j])//判断行的较大值
+            {
+                col_1[i]=a[i][j];
+                col_1count[i]=j;
+            }
+        }
+    }
+    for(i=0;i<3;i++)
+    {
+        sum_1[i]=row_1count[i]*10+col_1count[i];
+    }
+    for(j=0;j<4;j++)
+    {
+        for(i=0;i<3;i++)
+        {
+            if(row_2[j]>a[i][j])//判断列的较小值
+            {
+                row_2[j]=a[i][j];
+                row_2count[j]=i;
+            }
+        }
+    }
+    for(i=0;i<4;i++)
+    {
+        sum_2[i]=row_2count[i]*10+col_2count[i];//输出列的最小值的去逗号坐标
+    }
+    for(i=0;i<3;i++)
+    {
+        for(j=0;j<4;j++)
+        {
+            if(sum_1[i]==sum_2[j])
+            {
+                i=row_1count[i];
+                j=col_1count[i];
+                printf("%d",a[i][j]);
+                return 0;
+            }
+        }
+    }
+    printf("NO");
+    return 0;
+}
+
+-------------------------------------第二种方法
+#include <stdio.h>
+int main()
+{
+    int a[3][4];
+    int i,j,max,min,flag=1,h,max_j=0,min_h=0;
+    for(i=0;i<3;i++)
+    {
+        for(j=0;j<4;j++)
+            scanf("%d",&a[i][j]);
+    }
+
+    for(i=0;i<3;i++)
+    {   max=a[i][0];
+        for(j=0;j<4;j++)
+        {
+            if(max<a[i][j])
+            {
+                max=a[i][j];
+                max_j=j;
+            }
+        }
+        min=a[0][max_j];
+        for(h=0;h<3;h++)
+        {
+
+            if(min>a[h][max_j])
+            {
+                min=a[h][max_j];
+                min_h=h;
+            }
+        }
+        if(min==max)
+        {
+            flag=0;
+            break;
+        }
+    }
+         if(flag)
+            printf("NO");
+        else
+            printf("%d",a[min_h][max_j]);
+    return 0;
+}
+

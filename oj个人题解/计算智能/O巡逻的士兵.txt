@@ -1,0 +1,27 @@
+注意long long
+用map来动态规划
+思路是递归，小于三个返回0 等于三个返回1
+大于三个即是=去掉偶数后还剩多少个+去掉奇数后还剩多少个
+
+
+#include <iostream>
+#define ll long long
+#include <map>
+using namespace std;
+
+map<ll,ll>m;
+
+ll F(ll n)
+{
+    if(n<3) return 0;
+    if(n==3) return 1;
+    if(m.find(n)!=m.end()) return m[n];
+    return m[n]=F(n/2)+F((n+1)/2);
+}
+
+int main()
+{
+    ll n;
+    while(cin>>n,n!=0)
+    cout<<F(n)<<endl;
+}

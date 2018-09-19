@@ -1,0 +1,255 @@
+#include<stdio.h>
+#include<stdlib.h>
+struct cardofothers//闲家的牌及牌的大小 压的钱
+{
+    char card[5];
+    int siz;
+    int money;
+};
+typedef struct cardofothers others;
+
+int calsize(char *s);//计算牌的大小
+void chartoint(char *s,int *a);//把牌变为整数大小 A为14
+char inttochar(int a);//输入牌编号 得到相应字符型牌
+void chtoints(char *s,int *a);//把牌变为算牛时的整数大小
+int calm(int a,int sum);//计算牛牛倍率赔钱数
+int calmoney(char *host,others xian,int hmax,int hmaxcard);//计算庄家与每个闲家输或赢的钱
+int cmp(const void *a,const void *b)
+{
+    return *(int *)b-*(int *)a;
+}
+int main()
+{
+    others o[8];//至多8位闲家
+    char host[5];//庄家的5张牌
+    int a[14],n,i,j,sum,tmp;//a是牌种类的数组，a[0]置空为了使下标对应
+    int hmaxcard,hmax;//庄家最大牛的牌，最大牛数
+    char tmpch;//临时字符
+    scanf("%d",&n);
+    getchar();//吃掉回车
+    for(a[0]=0,i=1;i<14;i++)//每张牌4种
+        a[i]=4;
+    for(i=0;i<4;i++)//扫描庄家牌，并使相应的牌数减一
+    {
+        scanf("%c",&host[i]);
+        if(host[i]>='A'&&host[i]<='Z')
+        {
+            if(host[i]=='A')
+                a[1]--;
+            else if(host[i]=='T')
+                a[10]--;
+            else if(host[i]=='J')
+                a[11]--;
+            else if(host[i]=='Q')
+                a[12]--;
+            else if(host[i]=='K')
+                a[13]--;
+        }
+        else
+            a[host[i]-'0']--;
+    }
+    getchar();
+    for(j=0,sum=0;j<n;j++)//存闲家牌，减相应牌数
+    {
+        for(i=0;i<5;i++)
+        {
+            scanf("%c",&o[j].card[i]);
+            if(o[j].card[i]>='A'&&o[j].card[i]<='Z')
+            {
+                if(o[j].card[i]=='A')
+                    a[1]--;
+                else if(o[j].card[i]=='T')
+                    a[10]--;
+                else if(o[j].card[i]=='J')
+                    a[11]--;
+                else if(o[j].card[i]=='Q')
+                    a[12]--;
+                else if(o[j].card[i]=='K')
+                    a[13]--;
+            }
+            else
+                a[o[j].card[i]-'0']--;
+        }
+        o[j].siz=calsize(o[j].card);//计算闲家牌牛数
+        scanf("%d",&tmp);
+        o[j].money=tmp;//存庄家压的钱数
+        getchar();
+    }
+    for(hmax=-1,i=1;i<14;i++)//计算庄家从剩余的牌里抽老千的最大牛
+    {
+        if(a[i]<=0)//没这种牌就跳过
+            continue;
+        tmpch=inttochar(i);//根据编号得到对应字符牌
+        host[4]=tmpch;
+        tmp=calsize(host);
+        //printf("the %d is %d\n",i,tmp);
+        if(hmax<tmp)//打擂法计算最大牛并记录是哪种牌
+        {
+            hmax=tmp;
+            hmaxcard=i;
+        }
+    }
+    if(hmax==0)//当无牛的时候选择的最优牌
+        {
+
+            if(a[1]>0)//当然是先看看A有没有
+            {
+                host[4]=inttochar(1);
+                hmaxcard=1;
+            }
+            else
+            for(j=13;j>=1;j--)//否则从K开始往下看看有没有
+            {
+                if(a[j]==0)continue;
+                    host[4]=inttochar(j);
+                    hmaxcard=j;
+                    break;
+            }
+        }
+    for(i=0;i<n;i++)//与每个庄家比牛，计算赢或输的钱
+    {
+        sum+=calmoney(host,o[i],hmax,hmaxcard);
+    }
+    if(sum<=0)
+        printf("impossible");
+    else
+        printf("%d",sum);
+    return 0;
+}
+void chtoints(char *s,int *a)
+{
+    int i;
+    for(i=0;i<5;i++)
+    {
+        if(s[i]>='A'&&s[i]<='Z')
+        {
+            if(s[i]=='T'||s[i]=='J'||s[i]=='Q'||s[i]=='K')
+                a[i]=10;
+            if(s[i]=='A')
+                a[i]=1;
+        }
+        else
+            a[i]=s[i]-'0';
+    }
+}
+
+int calsize(char *s)
+{
+    int i,j,q,flag=0,flower,sum,a[5];
+    for(i=0,flower=0;i<5;i++)
+        if(s[i]>='B'&&s[i]<='Z'&&s[i]!='T')
+            flower++;
+    chtoints(s,a);
+    for(i=0;i<5;i++)
+    {
+        if(flag==1)break;
+        for(j=i+1;j<5;j++)
+        {
+            if(flag==1)break;
+            for(q=j+1;q<5;q++)
+            {
+                if(flag==1)break;
+                if((a[i]+a[j]+a[q])==20||(a[i]+a[j]+a[q])==30||(a[i]+a[j]+a[q])==10)
+                    flag=1;
+            }
+        }
+    }
+    if(flag==1)
+    {
+        for(sum=0,i=0;i<5;i++)sum+=a[i];
+        if(flower==5)
+            return 11;
+        else if(sum%10==0)
+            return 10;
+        else
+            return sum%10;
+    }
+    return 0;
+}
+
+char inttochar(int a)
+{
+    if(a>=10||a==1)
+    {
+        if(a==1)
+            return 'A';
+        if(a==10)
+            return 'T';
+        if(a==11)
+            return 'J';
+        if(a==12)
+            return 'Q';
+        if(a==13)
+            return 'K';
+    }
+    return a+'0';
+}
+void chartoint(char *s,int *a)
+{
+    int i;
+    for(i=0;i<5;i++)
+    {
+        if(s[i]>='A'&&s[i]<='Z')
+        {
+            if(s[i]=='T')
+                a[i]=10;
+            if(s[i]=='A')
+                a[i]=14;
+            if(s[i]=='J')
+                a[i]=11;
+            if(s[i]=='Q')
+                a[i]=12;
+            if(s[i]=='K')
+                a[i]=13;
+        }
+        else
+            a[i]=s[i]-'0';
+    }
+}
+int calm(int a,int sum)
+{
+    if(a>=0&&a<=8)
+        sum*=1;
+    else if(a==9)
+        sum*=2;
+    else if(a==10)
+        sum*=3;
+    else if(a==11)
+        sum*=4;
+    return sum;
+}
+int calmoney(char *host,others xian,int hmax,int hmaxcard)
+{
+    int flag=0,money=0,i;
+    int hcard[5],xcard[5],hscore=0,xscore=0;
+    if(hmax>xian.siz)
+        flag=1;
+    if(hmax==xian.siz)
+    {
+        host[4]=inttochar(hmaxcard);
+        chartoint(host,hcard);
+        chartoint(xian.card,xcard);
+        qsort(hcard,5,sizeof(hcard[0]),cmp);
+        qsort(xcard,5,sizeof(xcard[0]),cmp);
+        for(i=0;i<5;i++)
+        {
+            if(hcard[i]>xcard[i])
+            {
+                hscore++;
+            }
+            if(xcard[i]>hcard[i])
+            {
+                xscore++;
+            }
+        }
+        if(hscore>=xscore)
+            flag=1;
+        else
+            flag=0;
+    }
+    if(flag==0)
+        money-=calm(xian.siz,xian.money);
+    if(flag==1)
+        money+=calm(hmax,xian.money);
+    return money;
+}

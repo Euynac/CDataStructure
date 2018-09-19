@@ -1,0 +1,99 @@
+#include <iostream>
+#include <cstdio>
+#include <cstring>
+#include <queue>
+#include <map>
+using namespace std;
+char Map[105][105];
+map< pair<int,int>,pair<int,int> > transdoor;
+map< pair<int,int>,pair<int,int> >::iterator iter;
+queue< pair<pair<int,int>,int> > player;
+int h[4]={-1,0,1,0};
+int v[4]={0,1,0,-1};
+void addpos(int x,int y,int step)
+{
+    player.push(make_pair(make_pair(x,y),step+1));
+    return;
+}
+int main()
+{
+    int casenum;
+    cin>>casenum;
+    while(casenum--)
+    {
+        int column,row;
+        cin>>column>>row;
+        getchar();
+        for(int i=0;i<column;i++)gets(Map[i]);
+//        for(int i=0;i<column;i++)puts(Map[i]);
+        int doornum;
+        cin>>doornum;
+        while(doornum--)
+        {
+            int startx,starty,endx,endy;
+            cin>>startx>>starty>>endx>>endy;
+            Map[startx][starty]='8';
+            transdoor[make_pair(startx,starty)]=make_pair(endx,endy);
+        }
+//        while(1)//测试map
+//        {
+//            int sx,sy;
+//            cin>>sx>>sy;
+//            if(transdoor.find(make_pair(sx,sy))!=transdoor.end())
+//            {
+//                cout<<transdoor[make_pair(sx,sy)].first<<" "<<transdoor[make_pair(sx,sy)].second<<endl;
+//            }
+//            else
+//                cout<<"can't find"<<endl;
+//        }
+        int flag=0;
+        int sx,sy,ex,ey;
+        int step=0;
+        cin>>sx>>sy>>ex>>ey;
+        player.push(make_pair(make_pair(sx,sy),step));
+        while(!player.empty())
+        {
+            pair<pair<int,int>,int> cur;
+            cur=player.front();
+            int curx,cury,curstep;
+            curx=cur.first.first;
+            cury=cur.first.second;
+            curstep=cur.second;
+            player.pop();
+            if(curx==ex&&cury==ey)
+            {
+                cout<<curstep<<endl;
+                flag=1;
+                break;
+            }
+            if(transdoor.find(make_pair(curx,cury))!=transdoor.end())
+            {
+                int tmpx=transdoor[make_pair(curx,cury)].first;
+                int tmpy=transdoor[make_pair(curx,cury)].second;
+                Map[tmpx][tmpy]='2';
+                addpos(tmpx,tmpy,curstep);
+            }
+            for(int i=0;i<4;i++)
+            {
+                int tmpx=curx+v[i];
+                int tmpy=cury+h[i];
+                if(tmpx<column&&tmpy<row)
+                {
+                    if(Map[tmpx][tmpy]=='0'||Map[tmpx][tmpy]=='8')
+                    {
+                        Map[tmpx][tmpy]='2';
+                        addpos(tmpx,tmpy,curstep);
+                    }
+//                    else if(Map[tmpx][tmpy]=='8')
+//                    {
+//                        Map[tmpx][tmpy]='2';
+//                        addpos(transdoor[make_pair(tmpx,tmpy)].first,transdoor[make_pair(tmpx,tmpy)].second,curstep+1);//步数应该多一个
+//                    }
+                }
+            }
+        }
+        if(flag!=1)cout<<"die"<<endl;
+        transdoor.clear();
+    }
+    return 0;
+}

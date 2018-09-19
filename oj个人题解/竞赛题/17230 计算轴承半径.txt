@@ -1,0 +1,27 @@
+#include<stdio.h>
+#include<math.h>
+#define PI 3.14159265358979323
+int main()
+{
+    int T,N,R,i,ansint;
+    double angle,ans;
+    scanf("%d",&T);
+    for(i=0;i<T;i++)
+    {
+        scanf("%d%d",&N,&R);
+        if(N<2)
+        {
+            printf("Case %d: ",i+1);
+            printf("%d\n",R);
+            continue;
+        }
+        angle=(N-2)*PI/2.0/N;
+        printf("Case %d: ",i+1);
+        ans=R+R/cos(angle);
+        ansint=(int)ans;
+        if(ans-(int)ans>0)
+            ansint++;
+        printf("%d\n",ansint);
+    }
+    return 0;
+}

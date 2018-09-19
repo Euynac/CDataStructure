@@ -1,0 +1,61 @@
+#include<stdio.h>
+void tentoone(int *sum)
+{
+    int i;
+    for(i=64;i>=0;i--)
+    {
+        if(sum[i]>=10)
+        {
+            sum[i-1]+=sum[i]/10;
+            sum[i]%=10;
+        }
+    }
+    for(i=64;i>=0;i--)
+    {
+        if(sum[i]>=10)
+        {
+            tentoone(sum);
+            break;
+        }
+    }
+    return;
+}
+int calans(int *sum)
+{
+    int a=0,i;
+    for(i=0;i<65;i++)
+        a+=sum[i];
+    return a;
+}
+int caland(int m)
+{
+    int n,sum[65]={},i,flag=0;
+    sum[64]=1;
+    for(n=2;n<=m;n++)
+    {
+        for(i=64;i>=0;i--)
+        {
+            if(sum[i]!=0)
+            {
+                sum[i]*=n;
+                if(sum[i]>=10)
+                    flag=1;
+            }
+        }
+        if(flag==1)
+            tentoone(sum);
+    }
+    return calans(sum);
+
+}
+int main()
+{
+    int i;
+    int n[100]={};
+    scanf("%d",&n[0]);
+    for(i=0;n[i]!=0;i++)
+        scanf("%d",&n[i+1]);
+    for(i=0;n[i]!=0;i++)
+        printf("%d\n",caland(n[i]));
+    return 0;
+}

@@ -1,0 +1,20 @@
+#include<stdio.h>
+int main()
+{
+	int a=3,b=4,c=5,n;
+	scanf("%d",&n);
+	for(a=3;a<=b;a++)
+    {
+        for(b=a;b<=c;b++)
+        {
+            for(c=5;c<=n;c++)
+            {
+                if(a*a+b*b==c*c)
+                {
+                    printf("%d %d %d\n",a,b,c);
+                }
+            }
+        }
+    }
+	return 0;
+}

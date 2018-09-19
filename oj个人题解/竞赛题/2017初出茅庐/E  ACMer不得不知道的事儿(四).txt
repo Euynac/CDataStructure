@@ -1,0 +1,149 @@
+#include <stdio.h>
+#include <string.h>
+struct variable
+{
+    char letter;
+    int value;
+};
+typedef struct variable var;
+var v[26];
+void removespace(char *a)
+{
+    char *p,*write;
+    p=write=a;
+    while(*p)
+    {
+        if(*p!=' ')
+        {
+            *write=*p;
+            write++;
+        }
+        p++;
+    }
+    *write='\0';
+    return;
+}
+int findvar(char a,var *b,int countvar)
+{
+    int j;
+    for(j=0;j<countvar;j++)
+    {
+        if(b[j].letter==a)
+            return j;
+    }
+    return -1;
+}
+/*
+int calculator(char *a,int countvar)
+{
+
+}
+*/
+int chartoint(char *a)
+{
+    int i,sum=0,j;
+    int length;
+    length=strlen(a);
+    for(j=1,i=length-2;a[i]!='=';i--,j*=10)
+    {
+        if(a[i]=='-')
+        {
+            sum=-sum;
+            break;
+        }
+        sum+=(a[i]-'0')*j;
+    }
+    return sum;
+}
+int main()
+{
+    var temp;
+    char code[1001][85];
+    int n,i,j,countvar=0,undefine=0,place,place2;
+    scanf("%d",&n);
+    getchar();
+    for(i=0;i<n;i++)
+    {
+        gets(code[i]);
+        removespace(code[i]);
+        if(strlen(code[i])>3)
+        {
+            if(code[i][0]=='i'&&code[i][1]=='n'&&code[i][2]=='t')
+            {
+                v[countvar].letter=code[i][3];
+                v[countvar].value=-85102934;
+                countvar++;
+            }
+            if(code[i][1]=='=')
+            {
+                place=findvar(code[i][0],v,countvar);
+                /*
+                for(j=0;j<countvar;j++)
+                {
+                    if(v[j].letter==code[i][0])
+                        break;
+                }*/
+                if(place!=-1)
+                {
+                    //v[j].value=calculator(code[i],j);
+                    if(code[i][2]>='a'&&code[i][2]<='z')
+                    {
+                        place=findvar(code[i][2],v,countvar);
+                        place2=findvar(code[i][0],v,countvar);
+                        if(place!=-1)
+                        {
+                            v[place2].value=v[place].value;
+                        }
+                    }
+                    else if((code[i][2]>='0'&&code[i][2]<='9')||code[i][2]=='-')
+                    {
+                        //printf("chartoint=%d\n",chartoint(code[i]));
+                        v[place].value=chartoint(code[i]);
+                    }
+                }
+            }
+        }
+    }
+    /*
+    for(i=0;i<n;i++)
+    {
+        puts(code[i]);
+    }*/
+    for(i=0;i<countvar;i++)
+        if(v[i].value==-85102934)
+            undefine++;
+    printf("%d\n",undefine);
+    for(i=0;i<countvar-1;i++)
+        for(j=0;j<countvar-i-1;j++)
+            if(v[j].letter>v[j+1].letter)
+            {
+                temp=v[j+1];
+                v[j+1]=v[j];
+                v[j]=temp;
+            }
+    for(i=0;i<countvar;i++)
+    {
+        if(v[i].value==-85102934)
+            continue;
+        printf("%c=%d\n",v[i].letter,v[i].value);
+    }
+    return 0;
+}
+
+
+
+14
+   int b;
+int d;
+int a;
+int  c;
+c= 1;
+b = c;
+int f;
+d=a;
+ b  = a;
+f=a;
+f=15;
+a = -2 011 0 ;
+f=-16;
+      d=a;

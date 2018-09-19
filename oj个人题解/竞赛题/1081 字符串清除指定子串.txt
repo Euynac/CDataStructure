@@ -1,0 +1,37 @@
+#include <stdio.h>
+#include <string.h>
+int Count=0;
+char *removespace(char *origin)
+{
+    int length,i;
+    length=strlen(origin);
+    char *p1,*p2,*p3,*tmp;
+    p1=p3=p2=tmp=origin;
+    p2++;
+    p3++;
+    p3++;
+    for(i=0;i<length;i++)
+    {
+        if(*p1=='b'&&*p2=='a'&&*p3=='d')
+        {
+            p1+=3;p2+=3;p3+=3;
+            continue;
+        }
+        *tmp=*p1;
+        p1++;p2++;p3++;tmp++;
+    }
+    tmp+=2;
+    *tmp='\0';
+    Count++;
+    if(Count<10)
+        removespace(origin);
+    return origin;
+}
+int main()
+{
+    char buff[81];
+    gets(buff);
+    removespace(buff);
+    puts(buff);
+    return 0;
+}

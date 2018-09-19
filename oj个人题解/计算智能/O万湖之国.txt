@@ -1,0 +1,219 @@
+18233 万湖之国的形成
+时间限制:2500MS  内存限制:65535K
+提交次数:0 通过次数:0
+
+题型: 编程题   语言: G++;GCC;VC
+Description
+N国原是一块平原上，没有湖，直到一颗小行星撞入大气层碎成成千上万的碎片，碎片再撞击地面形成
+一个一个的坑， 下雨之后，最终形成万湖之国。
+现在科学家想用计算机模拟万湖之国形成过程，假设每一块碎片撞击地面，都撞出一个园形坑，现在知道
+每一个碎片造成的坑的圆心和半径，问每个坑都注满水后，最终形成多少个湖？
+
+
+
+输入格式
+第一行一个整数N，1<=N<=100,000，表示坑的数量
+此后N行，每一行三个double实数，前两个数是圆心的坐标x和y，最后一个数是圆半径（不大于1000）
+(数据随机产生，分布均匀)
+
+
+输出格式
+湖的个数
+
+
+输入样例
+3
+0 0 5
+10 0 5
+11.1 0 2.5
+
+
+输出样例
+2
+
+
+
+
+
+///////////////////个人答案
+#include <iostream>
+#include <algorithm>
+using namespace std;
+struct circle
+{
+    double x,y,r;
+}C[100050];
+int BCJ[100050];
+bool cmp(circle a,circle b)
+{
+    return a.x-a.r<b.x-b.r;//按左边界升序排列
+}
+int findd(int x)
+{
+    if(BCJ[x]==x)return x;
+    else
+    {
+        return BCJ[x]=findd(BCJ[x]);
+    }
+}
+bool unionornot(circle a,circle b)
+{
+    double len1,len2;
+    len1=(a.x-b.x)*(a.x-b.x)+(a.y-b.y)*(a.y-b.y);
+    len2=(a.r+b.r)*(a.r+b.r);
+    if(len1<len2)return true;
+    else return false;
+}
+int main()
+{
+    int N,count;
+    cin>>N;
+    count=N;//假设没有相交的圆
+    for(int i=0;i<N;i++)
+    {
+        cin>>C[i].x>>C[i].y>>C[i].r;
+        BCJ[i]=i;//把根节点赋给自己
+    }
+    sort(C,C+N,cmp);
+    for(int i=0;i<N;i++)
+    {
+        for(int j=i+1;j<N;j++)
+        {
+            if(C[i].x+C[i].r<=C[j].x-C[j].r)break;
+            if(unionornot(C[i],C[j])==true)
+            {
+                int tmp=findd(i);
+	int tmp2=findd(j);//注意这里的小细节，直接用if判断（findd(i)==findd(j)）则会导致并查集出错
+因为假设现在并查集是3个
+数组号1 2 3
+父节点2 2 3
+如果现在1、3发现是可以union的
+把3的父节点改成2不会出错，但是如果把1的父节点改成3，则会出错了。
+                if(BCJ[tmp]!=tmp2)//我觉得把BCJ[tmp]改成tmp也不会出错
+                {
+                    count--;
+                }
+                BCJ[tmp]=tmp2;
+            }
+        }
+    }
+    cout<<count<<endl;
+    return 0;
+}
+
+//////////////////////////////
+
+
+
+
+
+
+#include <iostream>
+#include <algorithm>
+#include <cstdio>
+using namespace std;
+#define N 100005
+int pre[N]; //记录i的父亲（根节点）
+//int rank1[N];
+int n; //输入变量n
+struct CC //定义坐标结构体
+{
+    double x,y; //注意都是double
+    double r;
+}c[N]; //结构体数组
+struct PP
+{
+    double x; //代表存储的对应圆的x边界（左右边界）
+    int type; //代表是左边界还是右边界 (左边界是0) （右边界是1） 
+    int idx;  //代表是第几个圆的序号
+}p[2*N];   //因为左右边界所以N要乘以2
+
+void makeset(int x)
+{
+    //rank1[x]=0;
+    pre[x]=x;
+}
+
+int findd(int x)
+{
+    int i,px=x;
+    while(px!=pre[px]) px=pre[px]; //寻找根节点px
+    //找到之后，进行路径压缩
+    while(x!=px){
+        i=pre[x]; //保存x的父亲
+        pre[x]=px; //改变x的父亲指向根节点
+        x=i; //改变x的变量，变为原来x的父亲 
+        //可以想想为什么他们的步骤不能调换
+    }
+    return px;
+}
+
+void unionset(int x, int y)
+{
+    int xx=findd(x);
+    int yy=findd(y);
+   //if(rank1[xx]>rank1[yy]) pre[yy]=xx;
+    //else {
+        //pre[xx]=yy;
+        //if(rank1[yy]==rank1[xx]) rank1[yy]++;
+    //}
+    if(xx!=yy)
+       pre[xx]=yy;
+}
+
+bool cmp(struct PP a, struct PP b)
+{
+    //return a.x>b.x;错的。。。
+    return a.x<b.x; //要升序
+}
+
+int goal(struct CC a, struct CC b) //比较是否相交 如果相交返回1，否则返回0
+{
+    double dis=(a.x-b.x)*(a.x-b.x)+(a.y-b.y)*(a.y-b.y);
+    double d=(a.r+b.r)*(a.r+b.r);
+    if(dis-d<0) return 1;
+    else return 0;
+}
+//bool rig[N];
+int main()
+{
+    cin>>n;
+    for(int i=0; i<n; i++) //初始化
+    {
+        //cin>>c[i].x>>c[i].y>>c[i].r;
+        scanf("%lf %lf %lf",&c[i].x,&c[i].y,&c[i].r);
+        p[2*i].x=c[i].x-c[i].r;
+        p[2*i].type=0;
+        p[2*i].idx=i;
+        p[2*i+1].x=c[i].x+c[i].r;
+        p[2*i+1].type=1;
+        p[2*i+1].idx=i;
+    }
+    sort(p,p+2*n,cmp); //升序
+    for(int i=0; i<n; i++) makeset(i);
+    int j;
+    for(int i=0; i<2*n; i++)
+    {
+        if(p[i].type==1) continue; //如果是右边界则退出此次循环，代表i这个圆（仅是这个圆
+        //到达了右边界），则应该判断下一个圆（i+1）即执行i++
+        else{
+            for(j=i+1; j<2*n&&p[i].idx!=p[j].idx; j++) //循环的条件是
+            // j<2*n,而且要在第i个圆的范围内循环
+            {
+                if(p[j].type==0){ //如果是左边界就进入判断两个圆是否会相交
+                    if(goal(c[p[j].idx],c[p[i].idx])==1) //符合相交的情况就合并
+                        unionset(p[j].idx,p[i].idx);
+                }
+                else continue; //这一步要不要都是一样的
+            }
+        }
+    }
+    //for(int i=0; i<n; i++)
+    //rig[findd(i)]=1;
+    int sum=0;
+    for(int i=0; i<n; i++)
+        if(pre[i]==i) sum++; //判断有多少个根节点，就代表有点少个湖
+    //for(int i=0; i<n ;i++)
+    //if(rig[i]==1) sum++;
+    printf("%d\n",sum);
+}

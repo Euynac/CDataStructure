@@ -1,0 +1,55 @@
+本质是穷举，用数组下标代表棋盘行号，用数组内元素代表棋盘列号，即可在棋盘上表示一个皇后的位置。皇后能吃同行、同列、以及同一斜线的棋子。
+因此有三个限制条件：
+循环穷举判断
+同列：这种模拟棋盘的方法不会出现同列的情况
+同行：直接看数组内元素是否和要放的元素一样，一样就退出循环，标记flag=0；不再继续递归下一个；
+同一斜线：假设一棋子在y=x+2的直线上，那么如果有棋子也在y=x+2上，则有y1-y2=x1+2-x2-2  ----> y1-y2=x1-x2
+又因为棋子又可以在另一个斜线上，比如说 y=-x+1, 那么也有y1-y2=x1-x2
+这时候可能会出现负数，所以使用绝对值。
+
+#include <iostream>
+#include <cmath>
+using namespace std;
+int ans=0;
+void generatePermutation(int A[],int cur,int N)
+{
+    if(cur==N)
+    {
+        ans++;
+    }
+    else for(int i=0;i<N;i++)
+    {
+        int OK=1;
+        if(cur!=0)
+        {
+            for(int j=0;j<cur;j++)
+            {
+                if(A[j]==i||abs(A[j]-i)==abs(cur-j))
+                {
+                    OK=0;
+                    break;
+                }
+            }
+        }
+        if(OK)
+        {
+            A[cur]=i;
+            generatePermutation(A,cur+1,N);
+        }
+    }
+}
+int main()
+{
+    int A[15];
+    int T,N;
+    cin>>T;
+    while(T--)
+    {
+        cin>>N;
+        generatePermutation(A,0,N);
+        cout<<ans<<endl;
+        ans=0;
+    }
+    return 0;
+}
+

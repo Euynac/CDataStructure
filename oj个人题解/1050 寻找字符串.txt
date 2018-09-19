@@ -1,0 +1,28 @@
+#include "stdio.h"
+#include "string.h"
+int main()
+{
+    char s[100];
+    char a[100];
+    int i,count=0,length_a,loop;
+    gets(s);
+    gets(a);
+    length_a=strlen(a);
+    loop_2:
+    for(i=0,loop=0;i<length_a;i++)
+        if(s[i]==a[i])
+        loop++;
+    if(loop==length_a)
+    {
+        printf("%d",count+1);
+        return 0;
+    }
+    else
+    goto loop_1;
+    loop_1:
+        for(i=0;i<100;i++)
+        s[i]=s[i+1];
+        count++;
+        goto loop_2;
+    return 0;
+}

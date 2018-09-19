@@ -1,0 +1,16 @@
+#include<stdio.h>
+int main(void)
+{
+    char a;
+    while ((a=getchar())!='\n')
+    {
+        if (a>=65&&a<=90)
+        {
+            a=a+32;
+            putchar(a);
+        }
+        else
+        putchar(a);
+    }
+    return 0;
+}

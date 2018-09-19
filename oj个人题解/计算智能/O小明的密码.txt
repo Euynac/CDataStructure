@@ -1,0 +1,66 @@
+利用质数判断打表快速判断是否为质数
+本质是个穷举题，加限制即可
+
+#include<cstdio>
+#include<cstdlib>
+#define MAXN 50
+int P[37]={0,0,1,1,0,1,0,1,0,0,0,1,0,1,0,0,0,1,0,1,0,0,0,1,0,0,0,0,0,1,0,1,0,0,0,0,0};
+int num=0;
+
+void print_permutation(int n,int A[],int cur,int M)
+{
+    if(cur==n)
+    {
+        num++;
+    }
+    else for(int i=0;i<=9;i++)
+    {
+        if(M==1)
+        {
+                if(P[i]==1)
+            {
+                A[cur]=i;
+                print_permutation(n,A,cur+1,M);
+            }
+        }
+        if(M==2)
+        {
+                if(cur==0||P[A[cur-1]+i]==1)
+            {
+                A[cur]=i;
+                print_permutation(n,A,cur+1,M);
+            }
+        }
+        if(M==3)
+        {
+                if(cur<2||P[A[cur-1]+A[cur-2]+i]==1)
+            {
+                A[cur]=i;
+                print_permutation(n,A,cur+1,M);
+            }
+        }
+        if(M==4)
+        {
+                if(cur<3||P[A[cur-1]+A[cur-2]+A[cur-3]+i]==1)
+            {
+                A[cur]=i;
+                print_permutation(n,A,cur+1,M);
+            }
+        }
+    }
+}
+
+int main()
+{
+    int A[MAXN];
+    int T,N,M;
+    scanf("%d",&T);
+    while(T--)
+    {
+        scanf("%d%d",&N,&M);
+        print_permutation(N,A,0,M);
+        printf("%d\n",num);
+        num=0;
+    }
+    return 0;
+}

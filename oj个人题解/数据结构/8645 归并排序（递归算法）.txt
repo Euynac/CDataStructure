@@ -1,0 +1,66 @@
+#include <iostream>
+using namespace std;
+void mergeA(int A[],int s1,int e1,int s2,int e2,int len)
+{
+    int i,j,B[len],k;
+    for(k=0,i=s1,j=s2;i<=e1&&j<=e2;)
+    {
+        if(A[i]<A[j])
+        {
+            B[k]=A[i];
+            k++;i++;
+        }
+        else
+        {
+            B[k]=A[j];
+            k++;j++;
+        }
+    }
+    if(i<=e1)
+    {
+        for(;i<=e1;i++)
+        {
+            B[k]=A[i];
+            k++;
+        }
+    }
+    else if(j<=e2)
+    {
+        for(;j<=e2;j++)
+        {
+            B[k]=A[j];
+            k++;
+        }
+    }
+    for(int i=s1,j=0;i<=e2;i++,j++)A[i]=B[j];
+}
+void mergesort(int A[],int str,int en)
+{
+    int len=en+1-str;
+    if(len>2)
+    {
+        int mid=str+(en-str)/2;
+        mergesort(A,str,mid);
+        mergesort(A,mid+1,en);
+        mergeA(A,str,mid,mid+1,en,len);
+    }
+    else if(len==2)
+    {
+        if(A[str]>A[en])
+        {
+            int tmp=A[str];
+            A[str]=A[en];
+            A[en]=tmp;
+        }
+    }
+}
+int main()
+{
+    int n;
+    cin>>n;
+    int A[n];
+    for(int i=0;i<n;i++)cin>>A[i];
+    mergesort(A,0,n-1);
+
+    return 0;
+}

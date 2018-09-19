@@ -1,0 +1,15 @@
+void binary(int x)
+{
+    int a[30]={};
+    int i,count=0;
+    for(i=29;x!=0;i--,x=x/2)
+    {
+        a[i]=x%2;
+        count++;
+    }
+    for(i=30-count;i<30;i++)
+    {
+        printf("%d",a[i]);
+    }
+    return;
+}

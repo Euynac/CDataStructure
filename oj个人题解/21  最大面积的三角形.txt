@@ -1,0 +1,49 @@
+#include<stdio.h>
+#include<math.h>
+struct point
+{
+    double x;
+    double y;
+};
+typedef struct point point;
+double length(point a,point b)
+{
+    double l;
+    l=sqrt((a.x-b.x)*(a.x-b.x)+(a.y-b.y)*(a.y-b.y));
+    return l;
+}
+double cals(double a,double b,double c)
+{
+    double s,area;
+    s=(a+b+c)/2;
+    area=sqrt(s*(s-a)*(s-b)*(s-c));
+    return area;
+}
+int main()
+{
+    point p[50];
+    int i,j,k,n;
+    double max=0,tmp;
+    scanf("%d",&n);
+    for(i=0;i<n;i++)
+        scanf("%lf%lf",&p[i].x,&p[i].y);
+    for(i=0;i<n;i++)
+    {
+        for(j=1;j<n;j++)
+        {
+            for(k=2;k<n;k++)
+            {
+                if((length(p[i],p[j])+length(p[i],p[k])>length(p[k],p[j]))&&fabs(length(p[i],p[j])-length(p[i],p[k]))<length(p[k],p[j]))
+                {
+                    tmp=cals(length(p[i],p[j]),length(p[i],p[k]),length(p[k],p[j]));
+                    if(max<tmp)
+                        max=tmp;
+                }
+
+
+            }
+        }
+    }
+    printf("%.4lf",max);
+    return 0;
+}

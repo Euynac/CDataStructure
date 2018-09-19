@@ -1,0 +1,36 @@
+#include <stdio.h>
+
+void removeSpace(char *s)
+{
+    int i,count=0,length=0;
+    char temp;
+    while(*s!='\0')
+    {
+        length++;
+        s++;
+    }
+    s=s-length;
+    for(;*s!='\0';s++)
+    {
+        if(*s==' ')
+        {
+            for(i=count;i<length-1;i++)
+            {
+                temp=*s;
+                *s=*(s+1);
+                *(s+1)=temp;
+                s++;
+            }
+            s=s-(length-count);
+        }
+        count++;
+    }
+}
+int main()
+{
+    char s[81];
+    gets(s);
+    removeSpace(s);
+    printf("%s", s);
+    return 0;
+}

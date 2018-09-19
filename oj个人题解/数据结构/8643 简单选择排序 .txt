@@ -1,0 +1,27 @@
+#include <iostream>
+using namespace std;
+void choosesort(int A[],int n)
+{
+    int minkey;
+    for(int i=0;i<n-1;i++)
+    {
+        minkey=i;
+        for(int j=i+1;j<n;j++)if(A[minkey]>A[j])minkey=j;
+        int tmp=A[i];
+        A[i]=A[minkey];
+        A[minkey]=tmp;
+        for(int i=0;i<n;i++)cout<<A[i]<<" ";
+        cout<<endl;
+    }
+}
+int main()
+{
+    int n;
+    cin>>n;
+    int A[n];
+    for(int i=0;i<n;i++)cin>>A[i];
+    if(n==1)cout<<A[0];
+    else
+    choosesort(A,n);
+    return 0;
+}

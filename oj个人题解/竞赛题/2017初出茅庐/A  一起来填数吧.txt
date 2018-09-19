@@ -1,0 +1,41 @@
+#include <stdio.h>
+#include <stdlib.h>
+int main()
+{
+    int a[56][56];
+    int count,i,T,q,p,n,m,flag;
+    scanf("%d",&T);
+    for(i=0;i<T;i++)
+    {
+        scanf("%d%d",&n,&m);
+        for(count=0,flag=0,q=0,p=0;p<m;p++)
+        {
+            for(;abs(q)<n;q--)
+            {
+                count++;
+                a[abs(q)][p]=count;
+                if(flag==1&&q==0)
+                {
+                    flag=0;
+                    break;
+                }
+            }
+            if(q==-n)
+            {
+                q=n-1;
+                flag=1;
+            }
+        }
+        for(p=0;p<n;p++)
+        {
+            for(q=0;q<m;q++)
+            {
+                printf("%d ",a[p][q]);
+            }
+            printf("\n");
+        }
+        printf("\n");
+        count=0;
+    }
+    return 0;
+}

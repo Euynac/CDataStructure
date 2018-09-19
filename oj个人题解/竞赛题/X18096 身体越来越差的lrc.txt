@@ -1,0 +1,223 @@
+#include <stdio.h>
+#include <stdlib.h>
+int cmp(const void *a,const void *b)
+{
+    return *(int *)a-*(int *)b;
+}
+int main()
+{
+    int n,T,p,x,y,z,effect[105]={},ans[1005]={},i,j,flag=0,q,r,o,countday;
+    scanf("%d",&T);
+    for(countday=0,i=0;i<T;i++,countday=0)
+    {
+        scanf("%d%d",&n,&p);
+        for(j=0;j<n;j++)//maybe the effect can be zero
+            scanf("%d",&effect[j]);
+        qsort(effect,n,sizeof(effect[0]),cmp);
+            for(q=0;q<n;q++)
+            {
+                if(effect[q]==-1)
+                    continue;
+                if(flag==1)
+                    flag=0;
+                z=effect[q];
+                y=p*z;
+                x=p*y;
+                for(o=q+1;o<n;o++)
+                {
+                    if(effect[o]>=y)
+                    {
+                        for(r=o+1;r<n;r++)
+                        {
+                            if(effect[r]>=x)
+                            {
+                                countday++;
+                                effect[r]=effect[o]=effect[q]=-1;
+                                flag=1;
+                                break;
+                            }
+                        }
+                        if(flag==1)
+                            break;
+                    }
+                }
+            }
+        ans[i]=countday;
+    }
+    for(i=0;i<T;i++)
+        printf("%d\n",ans[i]);
+    return 0;
+}
+````````````````````````````````````````````````````以上是从最小贪心，以下是从最大贪心
+#include <stdio.h>
+#include <stdlib.h>
+int cmp(const void *a,const void *b)
+{
+    return *(int *)b-*(int *)a;
+}
+int main()
+{
+    int n,T,p,x,y,z,effect[105]={},ans[1005]={},i,j,flag=0,q,r,o,countday;
+    scanf("%d",&T);
+    for(countday=0,i=0;i<T;i++,countday=0)
+    {
+        scanf("%d%d",&n,&p);
+        for(j=0;j<n;j++)//maybe the effect can be zero
+            scanf("%d",&effect[j]);
+        qsort(effect,n,sizeof(effect[0]),cmp);
+            for(q=0;q<n;q++)
+            {
+                if(effect[q]==-1)
+                    continue;
+                if(flag==1)
+                    flag=0;
+                if(p==0)
+                    x=y=z=0;
+                else
+                {
+                    x=effect[q]/p;
+                    y=x/p;
+                    z=y/p;
+                }
+                for(o=q+1;o<n;o++)
+                {
+                    if(effect[o]>=y)
+                    {
+                        for(r=o+1;r<n;r++)
+                        {
+                            if(effect[r]>=z)
+                            {
+                                countday++;
+                                effect[r]=effect[o]=effect[q]=-1;
+                                flag=1;
+                                break;
+                            }
+                        }
+                        if(flag==1)
+                            break;
+                    }
+                }
+            }
+        ans[i]=countday;
+    }
+    for(i=0;i<T;i++)
+        printf("%d\n",ans[i]);
+    return 0;
+}
+```````````````````````````````````````````````````````合并两种贪心
+#include <stdio.h>
+#include <stdlib.h>
+int cmp(const void *a,const void *b)
+{
+    return *(int *)b-*(int *)a;
+}
+int cmp2(const void *a,const void *b)
+{
+    return *(int *)a-*(int *)b;
+}
+int main()
+{
+    int n,T,p,x,y,z,effect[105]={},ans[1005]={},i,j,flag=0,q,r,o,countday,tmp;
+    scanf("%d",&T);
+    for(countday=0,i=0;i<T;i++,countday=0)
+    {
+        scanf("%d%d",&n,&p);
+        for(j=0;j<n;j++)//maybe the effect can be zero
+            scanf("%d",&effect[j]);
+        qsort(effect,n,sizeof(effect[0]),cmp);
+            for(q=0;q<n;q++)
+            {
+                if(effect[q]==-1)
+                    continue;
+                if(flag==1)
+                    flag=0;
+                if(p==0)
+                    x=y=z=0;
+                else
+                {
+                    x=effect[q]/p;
+                    y=x/p;
+                    z=y/p;
+                }
+                for(o=q+1;o<n;o++)
+                {
+                    if(effect[o]>=y)
+                    {
+                        for(r=o+1;r<n;r++)
+                        {
+                            if(effect[r]>=z)
+                            {
+                                countday++;
+                                effect[r]=effect[o]=effect[q]=-1;
+                                flag=1;
+                                break;
+                            }
+                        }
+                        if(flag==1)
+                            break;
+                    }
+                }
+            }
+        qsort(effect,n,sizeof(effect[0]),cmp2);
+            for(q=0;q<n;q++)
+            {
+                if(effect[q]==-1)
+                    continue;
+                if(flag==1)
+                    flag=0;
+                z=effect[q];
+                y=p*z;
+                x=p*y;
+                for(o=q+1;o<n;o++)
+                {
+                    if(effect[o]>=y)
+                    {
+                        for(r=o+1;r<n;r++)
+                        {
+                            if(effect[r]>=x)
+                            {
+                                tmp++;
+                                effect[r]=effect[o]=effect[q]=-1;
+                                flag=1;
+                                break;
+                            }
+                        }
+                        if(flag==1)
+                            break;
+                    }
+                }
+            }
+            if(tmp>countday)
+                countday=tmp;
+        ans[i]=countday;
+    }
+    for(i=0;i<T;i++)
+        printf("%d\n",ans[i]);
+    return 0;
+}
+
+
+
+
+3
+3 2
+1 2 4
+3 2
+1 2 4
+3 2
+1 2 4
+1
+1
+1
+
+
+1
+10 1
+1 1 1 1 1 1 1 1 1 1
+3
+
+1
+6 3
+1 3 4 9 10 27
+2
+(1、4、10)(3、9、27)

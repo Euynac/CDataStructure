@@ -1,0 +1,38 @@
+#include<stdio.h>
+
+int main()
+{
+    char a[30][30]={};
+    int i,j,N,q,p,count=0;
+    scanf("%d",&N);
+    getchar();
+    for(i=1;i<N+1;i++)
+        gets(a[i]);
+    for(i=1;i<N+1;i++)
+    {
+        for(j=0;j<N;j++)
+        {
+            if(a[i][j]=='\0')
+                continue;
+            if(a[i][j]=='B'&&a[i][j+1]=='A'&&a[i][j+2]=='D')
+            {
+                count++;
+                a[i][j]='\0';
+                a[i][j+1]='\0';
+                a[i][j+2]='\0';
+                for(q=0;q<N;q++)
+                    for(p=0;p<N;p++)
+                {
+                    if(a[q+1][p]=='\0'&&a[q][p]!='\0')
+                    {
+                        a[q+1][p]=a[q][p];
+                        a[q][p]='\0';
+                    }
+                }
+                i=1;j=0;
+            }
+        }
+    }
+    printf("%d",count);
+    return 0;
+}

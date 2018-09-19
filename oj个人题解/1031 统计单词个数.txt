@@ -1,0 +1,32 @@
+#include<stdio.h>
+int main()
+{
+    char a[80];
+    int i,count=1;
+    for(i=0;i<80;i++)
+    {
+        scanf("%c",&a[i]);
+        if(a[i]=='\n')
+        break;
+    }
+    for(i=0;i<80;i++)
+    {
+        if(a[i]=='\n')
+            break;
+        if(a[i]==' ')
+        {
+            for(;i<80;i++)
+            {
+                if(a[i]!=' ')
+                {
+                    i--;
+                    break;
+                }
+
+            }
+            count++;
+        }
+    }
+    printf("%d",count);
+    return 0;
+}

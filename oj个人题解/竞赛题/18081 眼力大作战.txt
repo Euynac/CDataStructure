@@ -1,0 +1,330 @@
+················为什么编译错误
+cygwin warning:
+  MS-DOS style path detected: \20170623_111820_393173_10495\Main.cc
+  Preferred POSIX equivalent is: //20170623_111820_393173_10495/Main.cc
+  CYGWIN environment variable option "nodosfilewarning" turns off this warning.
+  Consult the user's guide for more details about POSIX paths:
+    http://cygwin.com/cygwin-ug-net/using.html#using-pathnames
+\20170623_111820_393173_10495\Main.cc:4: error: variable-size type declared outside of any function
+\20170623_111820_393173_10495\Main.cc: In function `int creatematrix(int, int)':
+\20170623_111820_393173_10495\Main.cc:74: error: cannot convert `char (*)[((unsigned int)((int)m))]' to `char (*)[2]' for argument `1' to `int findtriangle(char (*)[2], int, int, int)'
+
+#include<stdio.h>
+int pointy=0;
+int findtriangle(char a[][pointy],int x,int y,int length)
+{
+    //printf("x=%d y=%d length=%d\n",x,y,length);
+    int i,j;
+    /*for(i=x;i<x+length+1;i++)
+    {
+        for(j=y;j<y+length+1;j++)
+        {
+            printf("%c",a[i][j]);
+        }
+        printf("\n");
+    }*/
+    for(i=x;i<x+length;i++)
+    {
+        for(j=y;j<y+length;j++)
+        {
+            if(a[i][j]=='A')
+            {
+                if(a[i+1][j-1]=='C')
+                {
+                    if(a[i+1][j+1]=='M')
+                        return 1;
+                }
+            }
+        }
+    }
+    return 0;
+}
+int creatematrix(int n,int m)
+{
+    char a[n][m];
+    int i,j,q,length=0,flag=0;
+    getchar();
+    for(i=0;i<n;i++)
+    {
+        for(j=0;j<m;j++)
+        {
+            //printf("第%d行第%d个数是：\n",i,j);
+            scanf("%c",&a[i][j]);
+        }
+        getchar();
+    }
+    /*for(i=0;i<n;i++)
+    {
+        for(j=0;j<m;j++)
+        {
+            //printf("\n第%d行第%d个数是：\n",i,j);
+            printf("%c",a[i][j]);
+        }
+        printf("\n");
+    }*/
+    for(i=0;i<n;i++)
+    {
+        for(j=0;j<m;j++)
+        {
+            if(a[i][j]=='S')
+            {   //printf("jinru1\n");
+                for(q=j+1,length=0;q<m;q++)
+                {
+                    length++;
+                    if(a[i][q]=='C')
+                        break;
+                }
+                if(q!=m)
+                {
+                    //printf("jinru2\n");
+                    if(a[i+length][j]=='A')
+                        if(a[i+length][j+length]=='U')
+                        {
+                            pointy=j+length+1;
+                            //printf("jinru3\n");
+                            flag=findtriangle(a,i,j,length);
+                            //printf("flag=%d\n",flag);
+                            if(flag==1)
+                                return 1;
+                        }
+
+                }
+            }
+        }
+    }
+    return flag;
+}
+int main()
+{
+    int T,n,m,i;
+    int flag[100]={};
+    scanf("%d",&T);
+    for(i=0;i<T;i++)
+    {
+        scanf("%d%d",&n,&m);
+        flag[i]=creatematrix(n,m);
+    }
+    for(i=0;i<T;i++)
+    {
+        if(flag[i]==1)
+            printf("Yes\n");
+        else
+            printf("No\n");
+    }
+    return 0;
+}
+
+
+···················合并函数版（PASS）
+#include<stdio.h>
+int creatematrix(int n,int m)
+{
+    char a[n][m];
+    int i,j,q,p,length=0,rlength[15],count=0;
+    for(i=0;i<n;i++)
+        for(j=0;j<m;j++)
+            scanf(" %c",&a[i][j]);
+    for(i=0;i<n;i++)
+    {
+        for(j=0;j<m;j++)
+        {
+            if(a[i][j]=='S')
+            {
+                for(count=0;count<15;count++)rlength[count]=0;count=0;
+                for(q=j+1,length=0;q<m;q++)
+                {
+                    length++;
+                    if(a[i][q]=='C')
+                    {
+                        rlength[count]=length;
+                        count++;
+                    }
+                }
+                if(rlength[0]>0)
+                {
+                    for(p=0;p<count;p++)
+                    {
+                        if(a[i+rlength[p]][j]=='A')
+                        {
+                            if(a[i+rlength[p]][j+rlength[p]]=='U')
+                            {
+                                int x,y;
+                                for(x=i;x<i+rlength[p];x++)
+                                {
+                                    for(y=j;y<j+rlength[p];y++)
+                                    {
+                                        if(a[x][y]=='A')
+                                        {
+                                           if(a[x+1][y-1]=='C'&&(x+1)<=(i+rlength[p])&&(y-1)>=j)
+                                            {
+                                                if(a[x+1][y+1]=='M'&&(y+1)<=j+rlength[p])
+                                                    return 1;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+            }
+        }
+    }
+    return 0;
+}
+int main()
+{
+    int T,n,m,i;
+    int flag[100]={};
+    scanf("%d",&T);
+    for(i=0;i<T;i++)
+    {
+        scanf("%d%d",&n,&m);
+        flag[i]=creatematrix(n,m);
+    }
+    for(i=0;i<T;i++)
+    {
+        if(flag[i]==1)
+            printf("Yes\n");
+        else
+            printf("No\n");
+    }
+    return 0;
+}
+
+``````````````````````````测试样例
+10
+3 3
+SAC
+CMM
+AMU
+5 5
+SSSSS
+SSSCC
+SSADD
+DCDMD
+AAAAU
+3 3
+AAJ
+GHC
+KAH
+12 3
+UUM
+CMA
+MCR
+VAU
+CMN
+DUS
+FAA
+CSU
+CAS
+AUM
+MUC
+UAA
+11 6
+ACMUCC
+UASUYM
+MLGCFM
+UAABOJ
+MUUUUU
+MAMAMC
+PUUCMM
+MMAACC
+UAAUNS
+CCMSSA
+MUCAMC
+14 4
+UMCS
+AAMM
+QCMC
+SKUM
+MMUA
+EACC
+MVCP
+AMVM
+CCSZ
+ASSS
+UACJ
+MACS
+SCLA
+AUSS
+7 5
+MUSUB
+SSMSS
+CMXUU
+UCSCC
+MACCA
+ACCMM
+SUGCM
+14 6
+SMCUMC
+SSAUCA
+LMMUCU
+CCUMCM
+UCRSUU
+CACEUA
+QMMMFA
+USCSCC
+UCSMUU
+UAMUCS
+SMSUML
+SUCCSC
+ETJPUU
+SCASAA
+12 3
+CDM
+AMU
+MPU
+UMM
+MSF
+CCS
+AMC
+CSU
+ACC
+SSU
+VAA
+CSC
+13 9
+SSCUUMMUU
+ASJUCMASS
+UAZSAUCMS
+UAAUUNUAM
+SMSHWACUM
+AUAUCMCWU
+MCFCEAUSA
+AMMAAXSAS
+CCFCCAGSM
+RBAUMUACS
+MUMCACUCA
+AUAUMEUUM
+AASUIUASC
+4 10
+CRSSUCUMFU
+MATAUMSAMA
+SCMAUCBSSA
+AGCAAACUUS
+标准输出答案:
+   1|Yes
+   2|Yes
+   3|No
+   4|No
+   5|No
+   6|No
+   7|No
+   8|No
+   9|No
+  10|No
+
+
+你的错误输出结果:
+   1|Yes
+   2|No
+   3|No
+   4|No
+   5|No
+   6|No
+   7|No
+   8|No
+   9|No
+  10|No

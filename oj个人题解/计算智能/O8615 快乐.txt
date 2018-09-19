@@ -1,0 +1,43 @@
+建立坐标系
+y轴为背包容量
+x轴为物品序号
+从最后一个物品，先填满最后一个物品y轴的数据
+再从n-1个物品开始填；
+最重要的是状态转移方程：
+此时最优解=（不放此物品，仅放后一个物品）>（放此物品，加上后一个物品背包容量减去此物品的重量后的最优解） ？ 哪个大选哪个。
+
+#include <iostream>
+#include <cstdio>
+using namespace std;
+int m[1999][51]={0};//100个物品 容量最大1000
+int main()
+{
+    //freopen("data1.txt","r",stdin);
+    int C=1999,n;
+    int v[51];
+    int w[51];
+    cin>>n;
+    for(int i=1;i<=n;i++)cin>>v[i];
+    for(int i=1;i<=n;i++)cin>>w[i];
+//    for(int i=1;i<=n;i++)cout<<v[i]<<" "<<w[i]<<endl;
+    for(int j=0;j<=C;j++)
+    {
+        if(j<w[n-1])m[j][n]=0;
+        else m[j][n]=v[n-1];
+    }
+    for(int i=n;i>=1;i--)
+        for(int j=0;j<=C;j++)
+        {
+            if(j<w[i])m[j][i]=m[j][i+1];
+            else m[j][i]=(m[j][i+1]>m[j-w[i]][i+1]+v[i]?
+                          m[j][i+1]:m[j-w[i]][i+1]+v[i]);
+        }
+    cout<<m[C][1]+1<<endl;
+//    for(int j=C;j>=0;j--)
+//    {
+//        for(int i=1;i<=n;i++)
+//            printf("%4d",m[j][i]);
+//        cout<<endl;
+//    }
+    return 0;
+}

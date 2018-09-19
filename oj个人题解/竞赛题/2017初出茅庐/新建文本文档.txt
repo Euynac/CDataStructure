@@ -1,0 +1,94 @@
+#include <stdio.h>
+#include <math.h>
+int sushu(int n)
+{
+    int i;
+    if(n<=1)
+        return 0;
+    for(i=2;i<=sqrt((double)n);i++)
+        if(n%i==0)
+            return 0;
+    return 1;
+}
+int main()
+{
+    int n,tmp[1000]={},i=0,count=0,blood=1,q,p;
+    scanf("%d",&n);
+    if(n==1)
+    {
+        printf("1 0");
+        return 0;
+    }
+    do
+        if(sushu(n+1))
+        {
+            blood+=n/2;
+            count++;
+            if(n%2!=0)
+            {
+                tmp[i]=n/2+1;
+                i++;
+            }
+            for(q=0;q<i;q++)
+            {
+                if(tmp[q]==0)
+                    continue;
+                for(p=q+1;p<i;p++)
+                {
+                    if(tmp[p]==0||tmp[q]==0)
+                        continue;
+                    if(sushu(tmp[q]+tmp[p]))
+                    {
+                        blood++;
+                        count++;
+                        tmp[q]=0;
+                        tmp[p]=0;
+                    }
+                }
+            }
+            printf("%d %d",blood,count);
+            break;
+        }
+        else
+        {
+            tmp[i]=n;
+            i++;
+        }
+    while(n--);
+    return 0;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+测试数据用例 No.3
+
+标准输入数据:
+8
+
+
+标准输出答案:
+   1|5 2
+
+
+你的错误输出结果:
+   1|4 1

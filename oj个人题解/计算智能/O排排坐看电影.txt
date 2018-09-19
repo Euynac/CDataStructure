@@ -1,0 +1,86 @@
+注意longlong
+注意边界条件
+这样考虑：
+if（男生女生都有）
+{
+	分prepre、pre讨论
+}
+else if（还有女生）
+{
+	if（前一个是男生）那可以放女生
+	else return 0；若前一个不是男生，因为已经没有男生了，放女生后有两个女生，又必须要接男生结束，所以后面怎么放都不行。
+}
+else if（还有男生）
+{
+	return 全排列
+}
+else 
+{	return 1；
+
+还要考虑女生很多的情况，在man函数里面使用能降低时间消耗，且考虑0，0
+的情况：
+        if(m>2*n||n==0) //如果 m>2n 或者n=0，就直接输出0
+        {
+            printf("0\n");
+            continue;
+        }
+
+
+#include <cstdio>
+#define ll long long
+using namespace std;
+int man=1;
+int woman=0;
+ll calfactorial(ll a)
+{
+    if(a==1)return 1;
+    else
+    return a*calfactorial(a-1);
+}
+ll calans(int male,int female,int pre,int prepre)
+{
+    if(male>0&&female>0) //如果男生和女生都大于0
+    {
+        if(pre==man) //如果当前位置的前一个人是男生,则该位置放男生或女生都可以
+            return female*calans(male,female-1,woman,pre)+male*calans(male-1,female,man,pre);
+        else    //如果前一个位置是女生
+        {
+            if(prepre==man) //且再前一个是男生,则该位置也是可以既放男生,或放女生
+                return female*calans(male,female-1,woman,pre)+male*calans(male-1,female,man,pre);
+            else        //当前一个和再前一个都是女生,则该位置一定要放男生; 形成'男女女男'的形式符合题目要求
+                return male*calans(male-1,female,man,pre);
+        }
+    }
+    else if(male>0) //如果女生没了,那剩下的n个男生可以形成n!种放法。
+    {
+        return calfactorial(male);
+    }
+    else if(female>0) //如果在考虑当前位置的时候已经是只剩女生了
+    {
+        if(pre==man) //如果前一个位置为男生则在该位置放女生
+            return female*calans(male,female-1,woman,pre);
+        else  //如果前一个位置为女生则接下来的放置肯定是不符合题目要求的
+            return 0;
+    }
+    else if(!male&&!female) //所有人都放置完毕
+        return 1;
+}
+int main()
+{
+    int w;
+    ll n,m;
+    ll ans;
+    scanf("%d",&w);
+    while(w--)
+    {
+        scanf("%lld%lld",&n,&m);
+        if(m>2*n||n==0) //如果 m>2n 或者n=0，就直接输出0
+        {
+            printf("0\n");
+            continue;
+        }
+        ans=n*calans(n-1,m,man,-1)+m*calans(n,m-1,woman,-1);
+        printf("%lld\n",ans);
+    }
+    return 0;
+}

@@ -1,0 +1,181 @@
+
+``````````````````````````````````````````````````平均分组法
+#include<stdio.h>
+#include<string.h>
+#define refresh memset(arr,0,sizeof(arr))
+long long calA(int n)//计算A
+{
+    long long sum;
+    int i;
+    if(n==1)
+        return 1;
+    else
+    {
+        for(i=2,sum=1;i<=n;i++)
+            sum*=i;
+    }
+    return sum;
+}
+long long calC(int up,int down)//计算C
+{
+    long long sumup=1,sumdown=1;
+    int i,j;
+    if((down-up)<up)
+        up=down-up;
+    for(i=up;i>=1;i--)
+        sumdown*=i;
+    for(j=0,i=down;j<up;i--,j++)
+        sumup*=i;
+    return sumup/sumdown;
+}
+long long average(int n,int base,int *arr)//平均分组函数
+{
+    int i,j;
+    long long upc,downa;
+    for(i=0;i<base;i++)arr[i]++;//份数都加一个（这个是加基底的份数）
+    for(upc=1,i=0;i<base;i++)
+    {
+        if(i==0){
+            upc*=calC(arr[i],n);
+        }
+        else{
+            n-=arr[i-1];
+            upc*=calC(arr[i],n);
+        }
+    }
+    for(downa=1,i=1,j=1;i<base;i++,j++)
+    {
+        if(arr[i-1]!=arr[i])
+        {
+            downa*=calA(j);
+            j=0;
+        }
+    }
+    if(arr[i-1]==arr[i-2])
+        downa*=calA(j);
+    return upc/downa;
+}
+long long cal(int n)//思路是从n个底开始，平均分组计算，n--个底，再计算，以此类推。有三层。第一层称基底，第二层为选择该基地后多余的个数，第三层用于放第二层可以拿上来的
+{
+    long long ans=0;
+    int lastcase,i,j,q,up,base,tofm,arr[25]={},temp;//tofm is times of merge //if the arr[] maybe discard?
+    if(n%3>0)//计算最小基底，arr[]存的是平均分组每组分的份数，tofm指的是当第二层多于两个，每两个拿一个到第三层构成一种新排序情况
+        lastcase=n/3+1;
+    else
+        lastcase=n/3;
+    for(base=n-1,up=1;base>=lastcase;base--,up++)
+    {
+            if(up<=base)//当第二层个数少于或等于下面的时候才计算这种情况
+            {
+                for(i=0;i<up;i++)arr[i]++;//上面有多少个，分的份数就为多少
+                ans+=average(n,base,arr);//计算平均分组
+                refresh;//清空arr[]
+            }
+            if(up/2>0)//当第二层个数多余两个的时候
+            {
+                tofm=up/2;//每两个拿一个上去的次数
+                for(i=0,temp=1;i<tofm;i++,temp++)//temp指的是第三层的数量，与tofm有关。
+                {
+                    if(up-temp>base)continue;//如果在第二层拿了一个上第三层还是比基底多就跳过这个情况
+                    for(j=0;j<temp;j++)arr[j]+=2;//份数按照第三层分的加
+                    for(q=0;q<(up-temp*2);q++,j++)arr[j]++;//拿上第三层后第二层只有一个的份数
+                    ans+=average(n,base,arr);
+                    refresh;
+                }
+            }
+    }
+    return ans+1;
+}
+int main()
+{
+    int n;
+    while(scanf("%d",&n)!=EOF)
+    {
+        if(n==0)
+        printf("0\n");
+        else
+        printf("%lld\n",cal(n));
+    }
+    return 0;
+}
+
+```````````````````````````````````````````````````````````````````
+#include <stdio.h>
+#include <math.h>
+
+long long play(long long x,long long y)   //用循环表达高中的排列组合；
+{
+    long long z=1,i;
+    if(y==0)              //要考虑y为0时的情况；
+        return 1;
+    else
+    {
+        for(i=0;i<y;i++)
+        {
+            z=z*x;
+            x--;
+        }
+        for(i=y-1;i>0;i--)
+            y=y*i;
+        z=z/y;
+    }
+    return z;
+}
+
+long long lilili(long long j,long long q)    //用循环表达高中的排列组合；
+{
+    long long z,n=j,k;
+    if(j==0)                   //要考虑j为0或1时的情况；
+        return 1;
+    else if(j==2||j==3)
+        return 1;
+    else
+    {
+        if(q==2)
+        {
+            for(z=j-1;z>j/2;z--)
+            n=n*z;
+            z=n;
+            k=pow(2,j/2);
+            z=z/k;
+        }
+        else
+        {
+            for(z=j-1;z>j/3;z--)
+            n=n*z;
+            z=n;
+            k=pow(6,j/3);
+            z=z/k;
+        }
+    }
+    return z;
+}
+
+main()
+{
+   long long l=0,k1,k2,k3,k4;
+   long long num;
+   long long a[100],n,i,i2,i3;
+   while((scanf("%lld",&n))!=EOF)
+   {
+       num=0;     //初始化num；
+       if(n!=0)
+       {
+           for(i3=0;i3<=n/3;i3++)                //i3表示3颗一堆共多少堆；
+           for(i2=0;i2<=(n-3*i3)/2;i2++)         //i2表示2颗一堆共多少堆；
+           {
+               i=n-3*i3-2*i2;            //i表示1颗一堆共多少堆；
+               k1=play(n,i);         //k1表示从n颗中选出i颗作为1颗一堆的糖果共有多少种情况；
+               k2=play(n-i,2*i2);       //k2表示从剩下的糖果中选出2*i2颗作为2颗一堆的糖果共有多少种情况；
+               k3=lilili(2*i2,2);       //k3表示作为2颗一堆的那些糖果共有多少种堆法；
+               k4=lilili(3*i3,3);       //k4表示作为3颗一堆的那些糖果共有多少种堆法；
+               num=num+k1*k2*k3*k4;      //将每种已确定i、i2、i3的堆法对应的情况累加；
+           }
+       }
+       a[l]=num;   //记录每组数据的输出值；
+       l++;
+   }
+   for(i=0;i<l;i++)
+       printf("%lld\n",a[i]);        //依次输出每组数据对应的情况数；
+}
+

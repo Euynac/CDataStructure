@@ -1,0 +1,59 @@
+#include <stdio.h>
+#include <stdlib.h>
+int calC(int up,int down);
+int calA(int n);
+int cmp(const void *a,const void *b)
+{
+    return (*(int*)a-*(int*)b);
+}
+int main()
+{
+    int n,m,j,i,tmp[5],upc,downa;
+    scanf("%d%d",&n,&m);
+    for(i=0;i<m;i++)
+    {
+        scanf("%d",&tmp[i]);
+    }
+    qsort(tmp,m,sizeof(tmp[0]),cmp);
+    for(upc=1,i=0;i<m;i++)
+    {
+        if(i==0){
+            upc*=calC(tmp[i],n);
+        }
+        else{
+            n-=tmp[i-1];
+            upc*=calC(tmp[i],n);
+        }
+    }
+    for(downa=1,i=1,j=1;i<m;i++,j++)
+    {
+        if(tmp[i-1]!=tmp[i])
+        {
+            downa*=calA(j);
+            j=0;
+        }
+    }
+    if(tmp[i-1]==tmp[i-2])
+        downa*=calA(j);
+    printf("%d",upc/downa);
+    return 0;
+}
+int calA(int n)
+{
+    if(n==1)
+        return 1;
+    else
+        return (n*calA(n-1));
+}
+int calC(int up,int down)
+{
+    int sumup=1,sumdown=1,i,j;
+    if((down-up)<up)
+        up=down-up;
+    for(i=up;i>=1;i--)
+        sumdown*=i;
+    for(j=0,i=down;j<up;i--,j++)
+        sumup*=i;
+    return sumup/sumdown;
+}
+

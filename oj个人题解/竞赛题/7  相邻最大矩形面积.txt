@@ -1,0 +1,34 @@
+
+#include <cstdio>
+int A[100005];
+int main()
+{
+    int n,maxx=0,tmp1,tmp2;
+    scanf("%d",&n);
+    for(int i=0;i<n;i++)
+    {
+        scanf("%d",&A[i]);
+    }
+    for(int i=0;i<n;i++)
+    {
+        int length=1;
+        for(int j=i+1;j<n;j++)
+        {
+            if(A[i]>A[j])break;
+            length++;
+        }
+        tmp1=length*A[i];
+        length=1;
+        for(int j=i-1;j>=0;j--)
+        {
+            if(A[i]>A[j])break;
+            length++;
+        }
+        tmp2=length*A[i];
+        tmp2-=A[i];
+        if(maxx<tmp1+tmp2)maxx=tmp1+tmp2;
+    }
+    if(maxx<n)maxx=n;
+    printf("%d",maxx);
+    return 0;
+}

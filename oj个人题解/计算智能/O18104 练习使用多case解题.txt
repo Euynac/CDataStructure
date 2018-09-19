@@ -1,0 +1,57 @@
+注意long long
+求最小公倍数先用辗转相减求出最大公约数
+再用两数乘积除以最大公约数即是
+
+
+
+
+
+#include <iostream>
+using namespace std;
+int GCD(int a,int b)//辗转相减求出最大公约数
+{
+    if(a==b)return a;
+    if(a<b)
+    {
+        int tmp;
+        tmp=a;
+        a=b;
+        b=tmp;
+    }
+    int r=a-b;
+    a=b;
+    b=r;
+    return GCD(a,b);
+}
+long long LCM(int a,int b)//最小公倍数即两数相乘除以最大公约数
+{
+    long long ans;
+    ans=a;
+    ans*=b;
+    ans/=GCD(a,b);
+    return ans;
+}
+int main()
+{
+    int n,a,b;
+    cin>>n;
+    while(n--)
+    {
+        cin>>a>>b;
+        cout<<LCM(a,b)<<endl;
+    }
+    cout<<"group 1 done"<<endl;
+    while(1)
+    {
+        cin>>a>>b;
+        if(a==0&&b==0)break;
+        cout<<LCM(a,b)<<endl;
+    }
+    cout<<"group 2 done"<<endl;
+    while(cin>>a>>b)
+    {
+        cout<<LCM(a,b)<<endl;
+    }
+    cout<<"group 3 done"<<endl;
+    return 0;
+}

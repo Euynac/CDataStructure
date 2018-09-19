@@ -1,0 +1,63 @@
+#include <stdio.h>
+long cal(int a,int b)
+{
+    if(b>=1)
+        return(a*(cal(a,b-1)));
+    else
+        return(1);
+}
+long cal3(int a,int b)
+{
+    int i;
+    int temp;
+    temp=a;
+    if(a>=1000)
+    a%=1000;
+    for(i=0;i<b-1;i++)
+    {
+        a*=temp;
+        if(a>=1000)
+            a%=1000;
+    }
+
+    return a;
+}
+int main()
+{
+    long k,n=1,km,kn,begin,q;
+    int i,j;
+    scanf("%ld",&k);
+    for(;;)
+    {
+        kn=cal(k,n);
+        if(kn>=1000)
+        {
+            begin=cal3(k,n);
+            for(i=1,j=n;n+i<100000;i++)
+            {
+                km=cal3(k,n+i);
+                kn=begin;
+                for(q=0;q<1000;q++)
+                {
+                    if(km==kn)
+                    {
+                        printf("%ld",n+n+i);
+                        return 0;
+                    }
+                    km=km*k;
+                    kn=kn*k;
+                    n++;
+                    if(km>1000)
+                        km%=1000;
+                    if(kn>1000)
+                        kn%=1000;
+                    if(kn==begin)break;
+                }
+                    n=j;
+            }
+        }
+        n++;
+    }
+    return 0;
+}
+

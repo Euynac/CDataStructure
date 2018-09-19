@@ -1,0 +1,48 @@
+先求出所有是丑数的，用优先队列
+头文件：queue
+priority_queue<ll,vector<ll>,greater<ll>> (自定义类型，升序)
+利用丑数性质，利用队列拿出来*2、*3、*5得到下面三个数
+注意重复，由于优先队列的性质，存丑数的数组一定是升序的，所以只要和存前一个数比就知道是不是重复了。
+
+得到1600个丑数后（第1600个丑数不会小于100000000）
+找不是丑数的；
+用循环，这个举例理解，设定一个N,想找第N的不是丑数：
+假设找第3个不是丑数的数，那么假设3刚好是第三个不是丑数的数，
+则1、2一定是不是丑数的数。则拿3和第一个丑数比来验证，因为如果真是这样，那么第一个丑数一定会大于3。比较后发现第一个丑数是1，小于3，假设不成立，则3不是第三个不是丑数的数。那么假设4是第三个不是丑数的数。
+已知第一个丑数小于3，则一定小于4，所以如果4是第三个不是丑数的数，那么第二个丑数将会大于4。验证后发现第二个丑数是2，小于4，则4也不是第三个丑数......直到7，假设7是第三个丑数，验证发现7和第x个丑数比小于第x个丑数，那么假设成立，7是第三个丑数。
+
+#include <iostream>
+#include <queue>
+#include <vector>
+#include <cstdio>
+using namespace std;
+priority_queue <long long,vector<long long>,greater<long long> > q;
+long long result[1600];
+int main()
+{
+    int count=0;
+    q.push(1);
+    while(!q.empty())
+    {
+        long long cur=q.top();
+        q.pop();
+        if(count==0||cur!=result[count-1])
+        {
+            result[count++]=cur;
+            if(cur>=100000000)break;
+            q.push(cur*2);
+            q.push(cur*3);
+            q.push(cur*5);
+        }
+    }
+    int T;
+    cin>>T;
+    int Num;
+    while(T--)
+    {
+        cin>>Num;
+        for(int i=1;Num>=result[i-1];i++)Num++;
+        cout<<Num<<endl;
+    }
+    return 0;
+}

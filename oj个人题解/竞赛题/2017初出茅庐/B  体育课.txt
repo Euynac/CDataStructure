@@ -1,0 +1,124 @@
+#include <stdio.h>
+int judge(int *a,int sortway,int n)//1 is yes
+{
+    int stob=1,btos=2,i;
+    if(sortway==stob)
+    {
+        for(i=0;i<n-1;i++)
+        {
+            if(a[i]==-10001)
+                continue;
+            if(a[i+1]==-10001)
+            {
+                if(i+2<n)
+                    if(a[i]>a[i+2])
+                        return 0;
+            }
+            else if(a[i]>a[i+1])
+                return 0;
+        }
+    }
+    if(sortway==btos)
+    {
+        for(i=0;i<n-1;i++)
+        {
+            if(a[i]==-10001)
+                continue;
+            if(a[i+1]==-10001)
+            {
+                if(i+2<n)
+                    if(a[i]<a[i+2])
+                        return 0;
+            }
+            else if(a[i]<a[i+1])
+                return 0;
+        }
+    }
+    return 1;
+}
+int main()
+{
+    int T,n,a[1005];
+    scanf("%d",&T);
+    int sortway,stob=1,btos=2,backtolife,i,j,ans1,ans2;
+    for(i=0;i<T;i++)
+    {
+        scanf("%d",&n);
+        for(j=0;j<n;j++)
+            scanf("%d",&a[j]);
+        if(n==2)
+            printf("YES\n");
+        else
+        {
+            for(sortway=stob,j=0;j<n-1;j++)
+            {
+                if((a[j]>a[j+1]&&sortway==stob)||(a[j]<a[j+1]&&sortway==btos))
+                {
+                    backtolife=a[j];
+                    a[j]=-10001;
+                    ans1=judge(a,sortway,n);
+                    a[j]=backtolife;
+                    backtolife=a[j+1];
+                    a[j+1]=-10001;
+                    ans2=judge(a,sortway,n);
+                    a[j+1]=backtolife;
+                    if(ans1||ans2)
+                    {
+                        printf("YES\n");
+                        goto next;
+                    }
+                    else
+                    {
+                        if(sortway==stob)
+                        {
+                            sortway=btos;
+                            j=0;
+                        }
+                        else
+                        {
+                            printf("NO\n");
+                            goto next;
+                        }
+                    }
+                }
+
+            }
+        }
+        printf("YES\n");
+        next:
+            while(0);
+    }
+    return 0;
+}
+
+
+
+
+9
+3
+1 4 5
+3 
+9 2 3
+5
+1 5 2 4 3
+6
+3 5 1 2 3 4
+6
+1 2 3 4 3 5
+6
+3 1 2 3 5 4
+6
+5 1 2 3 4 5
+6
+5 5 2 3 4 5
+6
+1 2 3 4 2 2
+YES
+YES
+NO
+NO
+YES
+NO
+YES
+NO
+NO

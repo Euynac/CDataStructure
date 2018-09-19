@@ -1,0 +1,92 @@
+#include <stdio.h>
+#include <stdlib.h>
+int cmp(const void *a,const void *b)
+{
+    return *(int*)a-*(int*)b;
+}
+int tmp[1000000][2]={};
+int bag[1000]={};
+int learned[1000]={};
+int exitornot(int capacity,int sample)
+{
+    int j,flag=0;
+    for(j=0;j<capacity;j++)
+    {
+        if(bag[j]==sample)
+        {
+            flag=1;
+            return flag;
+        }
+    }
+    return flag;
+}
+int learnedornot(int learn,int sample)
+{
+    int j;
+    for(j=0;j<learn;j++)
+    {
+        if(learned[j]==sample)
+        {
+            return j;
+        }
+    }
+    return j;
+}
+int main()
+{
+    int n,m,i,capacity=0,flag=0,learn=0,flag2=0,flag3=0,real=0;
+    scanf("%d%d",&n,&m);
+    for(i=0;i<m;i++)
+    {
+        scanf("%d%d",&tmp[i][0],&tmp[i][1]);
+        tmp[i][0]++;
+        tmp[i][1]++;
+    }
+    qsort(tmp,m,sizeof(tmp[0]),cmp);
+    /*for(i=0;i<m;i++)
+        printf("%d %d\n",tmp[i][0],tmp[i][1]);*/
+    for(i=0;i<m;i++)
+    {
+        flag=exitornot(capacity,tmp[i][0]);
+        if(!flag)
+        {
+            capacity++;
+            bag[capacity-1]=tmp[i][0];
+            learned[learn]=tmp[i][0];
+            learn++;
+            real++;
+            n--;
+            flag=0;
+        }
+        flag2=exitornot(capacity,tmp[i][1]);
+        if(!flag2)
+        {
+            capacity++;
+            bag[capacity-1]=tmp[i][1];
+            n--;
+            flag2=0;
+        }
+        flag3=learnedornot(learn,tmp[i][1]);
+        if(flag3!=learn)
+        {
+            learned[flag3]=0;
+            real--;
+        }
+    }
+    printf("%d",n+real);
+    return 0;
+}
+
+
+
+
+8 6
+0 1
+2 3
+4 5
+6 0
+6 2
+6 4
+
+answer
+2

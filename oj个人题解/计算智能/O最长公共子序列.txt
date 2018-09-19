@@ -1,0 +1,60 @@
+DP类
+递归式（会超时）从后往前递归：（分治法）
+int calans(char A[],char B[],int i,int j)
+{
+    if(i==0||j==0)return 0; //有一个字符串为空则是0个公共字串
+    if(A[i-1]==B[j-1])return 1+calans(A,B,i-1,j-1);//当两个字符串最后一个字符相同时，公共字串数目=1+减去该相同字符后的最优解
+    else return (calans(A,B,i-1,j)>calans(A,B,i,j-1)?calans(A,B,i-1,j):calans(A,B,i,j-1));//最后两字符不相同时候，则分为两种情况，取哪个字符串减1长度后的公共字串数最大的一个。
+}
+
+
+
+
+DP式 改写递归式，因为递归会有很多重复计算。
+int calans(char A[],char B[],int lenA,int lenB)
+{
+    for(int i=0;i<=lenA;i++)
+    {
+        for(int j=0;j<=lenB;j++)
+        {
+            if(i==0||j==0)table[i][j]=0;//置零，表实际上从i=1和j=1开始，因此i、j可以等于lenA、lenB。
+            else if(A[i-1]==B[j-1])table[i][j]=1+table[i-1][j-1];
+            else
+            {
+                table[i][j]=(table[i-1][j]>table[i][j-1]?table[i-1][j]:table[i][j-1]);
+            }
+        }
+    }
+    return table[lenA][lenB];
+}
+
+
+
+
+
+#include <algorithm>
+#include <cstdio>
+#include <cstring>
+using namespace std;
+char A[100];
+char B[100];
+int L[100][100];
+int main()
+{
+    freopen("data.txt","r",stdin);
+    cin>>A>>B;
+    int lenA=strlen(A);
+    int lenB=strlen(B);
+    for(int i=0;i<lenA;i++)L[i][0]=0;
+    for(int i=0;i<lenB;i++)L[0][i]=0;
+    for(int i=1;i<lenA;i++)
+    {
+        for(int j=1;j<lenB;j++)
+            if(A[i]==B[j])
+                L[i][j]=L[i-1][j-1]+1;
+            else
+                L[i][j]=(L[i-1][j]>L[i][j-1]?L[i-1][j]:L[i][j-1]);
+    }
+    cout<<L[lenA-1][lenB-1]<<endl;
+    return 0;
+}

@@ -1,0 +1,383 @@
+#include <stdio.h>
+#include <stdlib.h>
+struct node
+{
+    int num;
+    int label;
+    struct node *next;
+};
+typedef struct node D;
+
+D *create(int n)
+{
+    D *head,*tail,*p;
+    int i,j;
+    head=NULL;
+    for(i=0,j=1;i<n;i++,j++)
+    {
+        if(j==4)
+            j=1;
+        p=(D*)malloc(sizeof(D));
+        p->num=i+1;
+        p->label=j;
+        p->next=NULL;
+        if(head==NULL)
+            head=p;
+        else
+            tail->next=p;
+        tail=p;
+    }
+    return(head);
+}
+
+
+/*void print(D *head)
+{
+    D *p;
+    p=head;
+    while(p!=NULL)
+    {
+        printf("%8d%8d",p->num,p->label);
+        p=p->next;
+        printf("\n");
+    }
+}*/
+
+int freef(D *h)
+{
+    D *p,*pre,*temp;
+    int last_label=0;
+    p=h;
+    while(p->next!=NULL)//when the first is not 3
+    {
+
+        pre=p;
+        p=p->next;
+        last_label=p->label;
+        if(p->label==3)
+        {
+            temp=p;
+            pre->next=p->next;
+            free(temp);
+        }
+        //print(h);
+        //printf("\nhhhhhhhhh\n");
+    }
+    //printf("complete\n");
+    return(last_label);
+}
+void labelf(D *h,int last_label)
+{
+    //printf("\n恷朔匯倖方頁%d\n",last_label->label);
+    int i;
+    D *p;
+    p=h;
+    if(last_label==3)
+        last_label=0;
+    for(i=last_label+1;p!=NULL;i++)
+    {
+        p->label=i;
+        p=p->next;
+        if(i==3)
+            i=0;
+    }
+    //print(h);
+}
+int main()
+{
+    D *head;
+    int a,last_label;
+    scanf("%d",&a);
+    head=create(a);
+    //print(head);
+    //printf("hh");//????
+    while(head->next!=NULL)
+    {
+        if(head->label==3)
+            head=head->next;
+        last_label=freef(head);
+        labelf(head,last_label);
+        //printf("\n\n");//?????
+    }
+    printf("%d",head->num);
+    /*last_label=freef(head);
+    labelf(head,last_label);
+    printf("\n!!!及屈肝晴!!!!\n");
+    if(head->label==3)
+        head=head->next;
+    last_label=freef(head);
+
+    print(head);*/
+    return 0;
+}
+
+
+
+，，，，，，，，，，，，，，，，，，，，，，，，，，，，，
+撹瞳�今┠知雰之┌殖殖殖�
+#include <stdio.h>
+#include <stdlib.h>
+struct node
+{
+    int num;
+    int label;
+    struct node *next;
+};
+typedef struct node D;
+
+D *create(int n)
+{
+    D *head,*tail,*p;
+    int i,j;
+    head=NULL;
+    for(i=0,j=1;i<n;i++,j++)
+    {
+        if(j==4)
+            j=1;
+        p=(D*)malloc(sizeof(D));
+        p->num=i+1;
+        p->label=j;
+        p->next=NULL;
+        if(head==NULL)
+            head=p;
+        else
+            tail->next=p;
+        tail=p;
+    }
+    return(head);
+}
+int freef(D *h)
+{
+    D *p,*pre,*temp;
+    int last_label=0;
+    p=h;
+    while(p->next!=NULL)
+    {
+
+        pre=p;
+        p=p->next;
+        last_label=p->label;
+        if(p->label==3)
+        {
+            temp=p;
+            pre->next=p->next;
+            free(temp);
+        }
+    }
+    return(last_label);
+}
+void labelf(D *h,int last_label)
+{
+    int i;
+    D *p;
+    p=h;
+    if(last_label==3)
+        last_label=0;
+    for(i=last_label+1;p!=NULL;i++)
+    {
+        p->label=i;
+        p=p->next;
+        if(i==3)
+            i=0;
+    }
+}
+int main()
+{
+    D *head;
+    int a,last_label;
+    scanf("%d",&a);
+    head=create(a);
+    while(head->next!=NULL)
+    {
+        if(head->label==3)
+            head=head->next;
+        last_label=freef(head);
+        labelf(head,last_label);
+    }
+    printf("%d",head->num);
+    return 0;
+}
+
+
+
+
+
+
+，，，，，，，，，，，，，，，，，，，，，，，，
+#include <stdio.h>
+#include <stdlib.h>
+#include <malloc.h>
+struct node
+{
+    int num;
+    int label;
+    struct node *next;
+};
+typedef struct node D;
+
+D *create(int n)
+{
+    D *head=NULL,*tail=NULL,*p=NULL;
+    int i,j;
+    head=NULL;
+    for(i=0,j=1;i<n;i++,j++)
+    {
+        if(j==4)
+            j=1;
+        p=(D*)malloc(sizeof(D));
+        p->num=i+1;
+        p->label=j;
+        p->next=NULL;
+        if(head==NULL)
+            head=p;
+        else
+            tail->next=p;
+        tail=p;
+    }
+    return(head);
+}
+int freef(D *h)
+{
+    D *p=NULL,*pre=NULL,*temp=NULL;
+    int last_label=0;
+    p=h;
+    while(p->next!=NULL)
+    {
+
+        pre=p;
+        p=p->next;
+        last_label=p->label;
+        if(p->label==3)
+        {
+            temp=p;
+            pre->next=p->next;
+            free(temp);
+        }
+    }
+    return(last_label);
+}
+void labelf(D *h,int last_label)
+{
+    int i;
+    D *p=NULL;
+    p=h;
+    if(last_label==3)
+        last_label=0;
+    for(i=last_label+1;p!=NULL;i++)
+    {
+        p->label=i;
+        p=p->next;
+        if(i==3)
+            i=0;
+    }
+}
+int main()
+{
+    D *head=NULL;
+    int a,last_label;
+    scanf("%d",&a);
+    head=create(a);
+    while(head->next!=NULL)
+    {
+        if(head->label==3)
+            head=head->next;
+        last_label=freef(head);
+        labelf(head,last_label);
+    }
+    printf("%d",head->num);
+    return 0;
+}
+，，，，，，，，，，，，，，，，，，，，，，，，，，，，，，，，，，
+孔撹。
+#include <stdio.h>
+#include <stdlib.h>
+#include <malloc.h>
+struct node
+{
+    int num;
+    int label;
+    struct node *next;
+};
+typedef struct node D;
+
+D *create(int n)
+{
+    D *head=NULL,*tail=NULL,*p=NULL;
+    int i,j;
+    head=NULL;
+    for(i=0,j=1;i<n;i++,j++)
+    {
+        if(j==4)
+            j=1;
+        p=(D*)malloc(sizeof(D));
+        p->num=i+1;
+        p->label=j;
+        p->next=NULL;
+        if(head==NULL)
+            head=p;
+        else
+            tail->next=p;
+        tail=p;
+    }
+    return(head);
+}
+int freef(D *h)
+{
+    D *p=NULL,*pre=NULL;
+    int last_label=0;
+    p=h;
+    while(p->next!=NULL)
+    {
+
+        pre=p;
+        p=p->next;
+        last_label=p->label;
+        if(p->label==3)
+            pre->next=p->next;
+    }
+    return(last_label);
+}
+void labelf(D *h,int last_label)
+{
+    int i;
+    D *p=NULL;
+    p=h;
+    if(last_label==3)
+        last_label=0;
+    for(i=last_label+1;p!=NULL;i++)
+    {
+        p->label=i;
+        p=p->next;
+        if(i==3)
+            i=0;
+    }
+}
+int main()
+{
+    D *head=NULL;
+    int a,last_label;
+    scanf("%d",&a);
+    head=create(a);
+    while(head->next!=NULL)
+    {
+        if(head->label==3)
+            head=head->next;
+        last_label=freef(head);
+        labelf(head,last_label);
+    }
+    printf("%d",head->num);
+    return 0;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+

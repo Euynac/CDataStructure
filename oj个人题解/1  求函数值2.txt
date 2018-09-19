@@ -1,0 +1,50 @@
+#include <stdio.h>
+int G(int x);
+int sum;
+int F(int x)
+{
+    int rest;
+    if(x<2)
+        sum=x;
+    else if(x>=2)
+    {
+        rest=x%2;
+        if(rest==0)
+        {
+            sum=G(x/2)*2;
+        }
+        else if(rest==1)
+        {
+            sum=G((x-1)/2);
+        }
+    }
+    return sum;
+}
+int G(int x)
+{
+    int rest;
+    if(x<2)
+        sum=x;
+    else if(x>=2)
+    {
+        rest=x%2;
+        if(rest==0)
+        {
+            sum=G(x/2)+1;
+        }
+        else if(rest==1)
+        {
+            sum=x;
+        }
+    }
+    return sum;
+}
+int main()
+{
+    int a;
+    scanf("%d",&a);
+    printf("%d",F(a));
+    return 0;
+}
+
+

@@ -1,0 +1,17 @@
+```````````````莫梓琪大佬的方法
+#include <stdio.h>
+char buff[100001];
+int main()
+{
+    int s,c,a,u,i;
+    gets(buff);
+    for(s=c=a=u=i=0;buff[i]!='\0';i++)
+    {
+        if(buff[i]=='S')s++;
+        else if(buff[i]=='C')c=(c+s)%1000000007;
+        else if(buff[i]=='A')a=(a+c)%1000000007;
+        else if(buff[i]=='U')u=(u+a)%1000000007;
+    }
+    printf("%d\n",u);
+    return 0;
+}

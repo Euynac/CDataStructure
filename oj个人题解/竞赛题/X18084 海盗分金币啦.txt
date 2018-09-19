@@ -1,0 +1,86 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+int a[1002][10002];
+int find (int pos,int money)//找到有多少个连续的”死党“
+{
+    int i;
+    int i_count=0;
+    for (i=pos;i>=1;i--)
+    {
+        if (a[i][money]!=-1)
+        {
+            return i_count;
+        }
+        i_count++;
+    }
+    return i_count;
+}
+void init ()
+{
+    int i,j;
+    int t;
+    for (j=1;j<=10000;j++)
+    {
+        a[1][j]=j;//拿到
+        a[3][j]=j;//get
+    }
+    for (j=1;j<=10000;j++)
+    {
+        a[2][j]=-1;//死忙
+    }
+    for (j=1;j<=10000;j++)
+    {
+        a[4][j]=j-2;//1---4要特殊处理，，自己看看"规律"吧
+    }
+    int need;
+    int money;
+    for (i=5;i<=1000;i++)
+    {
+        for (j=1;j<=10000;j++)
+        {
+             need=i/2;//需要贿赂的人数
+             if (a[i-1][j]==0)
+             {
+                 money=need;//就需要这么多个1
+             }
+             else if (a[i-1][j]==-1)//他会死的话..可以小很多个
+             {
+                 t=find(i-1,j);
+                 money=need-t;//还可以少t个
+             }
+             else
+             {
+                 money=need+1;//4个海盗时是不符合这个规矩的
+             }
+
+             if (j<money)//不够钱..死了
+             {
+                 a[i][j]=-1;
+             }
+             else
+             {
+                 a[i][j]=j-money;
+             }
+        }
+    }
+    return ;
+}
+void work ()
+{
+    int n,m;
+    scanf ("%d%d",&n,&m);
+    printf ("%d\n",a[n][m]);
+    return ;
+}
+int main ()
+{
+    init ();
+    int t;
+    scanf ("%d",&t);
+    while (t--)
+    {
+        work ();
+    }
+    return 0;
+}

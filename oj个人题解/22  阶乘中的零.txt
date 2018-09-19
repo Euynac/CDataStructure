@@ -1,0 +1,30 @@
+#include<stdio.h>
+int calzero(int a)
+{
+    int r,temp,count=0;
+    if((r=a%5)!=0)
+        a-=r;
+    for(;a>0;a-=5)
+    {
+        temp=a;
+        while(temp%5==0)
+        {
+            temp/=5;
+            count++;
+        }
+    }
+    return count;
+}
+int main()
+{
+    long a,zero[1000];
+    int n,i;
+    scanf("%d",&n);
+    for(i=0;i<n;i++)
+    {
+        scanf("%ld",&a);
+        zero[i]=calzero(a);
+    }
+    for(i=0;i<n;i++)printf("%ld\n",zero[i]);
+    return 0;
+}

@@ -1,0 +1,112 @@
+
+#include "iostream"
+#include "string"
+#include "cstdio"
+using namespace std;
+struct element
+{
+	int mol;
+	char name;
+	double weight;
+	element(char c,double wei, int n = 0) :name(c),mol(n),weight(wei) {};
+	void print() {
+		cout << name << ":" << mol << " mol " << weight << "g/mol" << endl;
+	}
+	void mol_zero() {
+		mol = 0;
+	}
+};
+int stoint(string s) {
+	int len = s.length();
+	int beishu = 1;
+	int s_int = 0;
+	for (int i = 1; i < len; i++, beishu *= 10);
+	for (int i = 0; i < len; i++,beishu/=10)
+		s_int += beishu * (s[i]-'0');
+	return s_int;
+}
+int satisfy(char x) {
+	if (x == 'C' || x == 'H' || x == 'O' || x == 'N')
+		return 1;
+	else
+		return 0;
+}
+element Carbon('C', 12.01), Hydrogen('H', 1.008), Oxygen('O', 16.00), Nitrogen('N', 14.01);
+void addmol(char flag, string &tmp) {
+	switch (flag)
+	{
+		case 'C':	if (tmp.length() == 0)
+						Carbon.mol++;
+					else
+						Carbon.mol += stoint(tmp);
+					break;
+		case 'N':	if (tmp.length() == 0)
+						Nitrogen.mol++;
+					else
+						Nitrogen.mol += stoint(tmp);
+					break;
+		case 'O':	if (tmp.length() == 0)
+						Oxygen.mol++;
+					else
+						Oxygen.mol += stoint(tmp);
+					break;
+		case 'H':	if (tmp.length() == 0)
+						Hydrogen.mol++;
+					else
+						Hydrogen.mol += stoint(tmp);
+					break;
+	}
+	tmp.clear();
+}
+int main()
+{
+	int N;
+	cin >> N;
+	while (N--) {
+		double ans=0;
+		char flag = '\0';
+		string s, tmp;
+		cin >> s;
+		for (string::const_iterator i = s.begin(); i != s.end(); i++)
+		{
+			if (satisfy(flag) && !satisfy(*i))
+				tmp += *i;
+			else
+			{
+				if (satisfy(flag))//make sure that whether it is another atoms or not
+					addmol(flag, tmp);
+				switch (*i)
+				{
+				case 'C':
+					flag = 'C';
+					continue;
+				case 'N':
+					flag = 'N';
+					continue;
+				case 'O':
+					flag = 'O';
+					continue;
+				case 'H':
+					flag = 'H';
+					continue;
+				}
+			}
+
+		}
+		if (satisfy(flag))
+			addmol(flag, tmp);
+		//Carbon.print();
+		//Hydrogen.print();
+		//Oxygen.print();
+		//Nitrogen.print();
+		ans = Carbon.mol*Carbon.weight + Hydrogen.mol*Hydrogen.weight + Oxygen.mol*Oxygen.weight + Nitrogen.mol*Nitrogen.weight;
+		printf("%.3lf\n",ans);
+		Carbon.mol_zero();
+		Hydrogen.mol_zero();
+		Oxygen.mol_zero();
+		Nitrogen.mol_zero();
+	}
+	//system("pause");//提交要去掉这一行
+    return 0;
+}
+

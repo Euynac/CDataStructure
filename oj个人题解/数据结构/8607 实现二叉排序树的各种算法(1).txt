@@ -1,0 +1,135 @@
+#include <cstdio>
+#include <malloc.h>
+#include <stack>
+#include <queue>
+typedef struct BinaryTree* BTree;
+typedef struct BinaryTree
+{
+    int data;
+    BTree lchild;
+    BTree rchild;
+}BTreeNode;
+void InsertTree(BTree &T,int num)
+{
+    if(T==NULL)
+    {
+        if(!(T=(BTree)malloc(sizeof(BTreeNode))))printf("ERROR");
+        T->data=num;
+        T->lchild=NULL;
+        T->rchild=NULL;
+    }
+    else
+    {
+        if(T->data>=num)
+            InsertTree(T->lchild,num);
+        else
+            InsertTree(T->rchild,num);
+    }
+
+}
+void Visit(int n)
+{
+    printf("%d ",n);
+}
+void PreOrderTraverse(BTree T)
+{
+    if(T!=NULL)
+    {
+        Visit(T->data);
+        PreOrderTraverse(T->lchild);
+        PreOrderTraverse(T->rchild);
+    }
+}
+void InOrderTraverse(BTree T)
+{
+    if(T!=NULL)
+    {
+        InOrderTraverse(T->lchild);
+        Visit(T->data);
+        InOrderTraverse(T->rchild);
+    }
+}
+void PastOrderTraverse(BTree T)
+{
+    if(T!=NULL)
+    {
+        PastOrderTraverse(T->lchild);
+        PastOrderTraverse(T->rchild);
+        Visit(T->data);
+    }
+}
+int FindKey(BTree T,int key)
+{
+    if(T==NULL)return 0;
+    else
+    {
+        if(T->data==key)return 1;
+        if(T->data>key)return FindKey(T->lchild,key);
+        else return FindKey(T->rchild,key);
+    }
+}
+void Traverse(BTree T)
+{
+    PreOrderTraverse(T);
+    printf("\n");
+    InOrderTraverse(T);
+    printf("\n");
+    PastOrderTraverse(T);
+    printf("\n");
+}
+void LayerTraverse(BTree T)
+{
+    std::queue<BTree> Q;
+    Q.push(T);
+    BTree t;
+    while(!Q.empty())
+    {
+        t=Q.front();
+        Q.pop();
+        Visit(t->data);
+        if(t->lchild!=NULL)Q.push(t->lchild);
+        if(t->rchild!=NULL)Q.push(t->rchild);
+    }
+}
+int main()
+{
+    std::stack<BTree> S;
+    BTree T=NULL;
+    int n,num;
+    scanf("%d",&n);
+    while(n--)
+    {
+        scanf("%d",&num);
+        InsertTree(T,num);
+    }
+    Traverse(T);
+    int key;
+    scanf("%d",&key);
+    printf("%d\n",FindKey(T,key));
+    scanf("%d",&key);
+    printf("%d\n",FindKey(T,key));
+    scanf("%d",&num);
+    InsertTree(T,num);
+    Traverse(T);
+    //InOrderTraverse
+    BTree Tmp;
+    Tmp=T;
+    while(Tmp!=NULL||!S.empty())
+    {
+        while(Tmp!=NULL)
+        {
+            S.push(Tmp);
+            Tmp=Tmp->lchild;
+        }
+        if(!S.empty())
+        {
+            Tmp=S.top();
+            Visit(Tmp->data);
+            S.pop();
+            Tmp=Tmp->rchild;
+        }
+    }
+    printf("\n");
+    LayerTraverse(T);
+    return 0;
+}
